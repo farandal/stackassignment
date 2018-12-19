@@ -1,0 +1,11 @@
+{
+  "name": "stackassignment-backend",
+  "version": "1.0.0",
+  "description": "Stack Assignment Backend - M800",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Francisco Aranda <farandal@gmail.com>",
+  "license": "ISC"
+}

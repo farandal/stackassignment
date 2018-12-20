@@ -11,3 +11,15 @@ export const sign = (id, options, method = jwtSign) =>
 export const signSync = (id, options) => sign(id, options, jwt.sign)
 
 export const verify = (token) => jwtVerify(token, jwtSecret)
+
+// check if Token exists on request Header and attach token to request as attribute
+export const checkToken = (req, res, next) => {
+    // Get auth header value
+    const bearerHeader = req.headers['authorization'];
+    if (typeof bearerHeader !== 'undefined') {
+        req.token = bearerHeader.split(' ')[1];
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}

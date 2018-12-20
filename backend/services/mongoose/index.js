@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import { mongo } from '../../config'
 
 Object.keys(mongo.options).forEach((key) => {
+  console.log(key,mongo.options[key])
   mongoose.set(key, mongo.options[key])
 })
 

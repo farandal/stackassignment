@@ -36,12 +36,17 @@ const config = {
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     google: {
         clientID: requireProcessEnv('GOOGLE_OAUTH_CLIENT_ID'),
-        clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET')
+        clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET'),
+        callback: '/auth/google-success'
     },
     mongo: {
-      options: {
+      uri: requireProcessEnv('MONGODB_URL'),
+      options: {   
         db: {
           safe: true
+        },
+        options: {
+          debug: true
         }
       }
     }
@@ -49,20 +54,8 @@ const config = {
   test: { 
   },
   development: {
-    mongo: {
-      uri: requireProcessEnv('MONGODB_DEV_URL'),
-      options: {
-        debug: true
-      }
-    }
   },
   production: {
-    mongo: {
-      uri: requireProcessEnv('MONGODB_PROD_URL'),
-      options: {
-        debug: true
-      }
-    }
   }
 }
 

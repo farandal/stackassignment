@@ -7,69 +7,37 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { jwtSecret, masterKey, google } from '../../config'
 import User, { schema } from '../../api/user/model'
 
-
 /* GOOGLE AUTHENTICATION */
 passport.use(
     new GoogleStrategy({
         // options for strategy
-        callbackURL: '/google-auth-success',
+        callbackURL: google.callback,
         clientID: google.clientID,
         clientSecret: google.clientSecret
+        
     }, async (accessToken, refreshToken, profile, done) => {
+        
         const email = profile.emails[0].value;
+
+        console.log("email",email);
+        console.log("accessToken:",accessToken);
+        console.log("profileid",profile.id);
 
         // check if user already exists
         const currentUser = await User.findOne({googleId: profile.id});
+
         if (currentUser) {
+            console.log("User already exists in database");
             // already have the user -> return (login)
             return done(null, currentUser);
         } else {
             // register user and return
-            const newUser = await new User({email: email, googleId: profile.id}).save();
+            console.log("Registering new user");
+            const newUser = await new User({email: email, googleId: profile.id, accessToken: accessToken}).save();
             return done(null, newUser);
         }
     }
 ))
-
-export const googleAuth = () => (req, res, next) =>
-  passport.authenticate('google', {
-      session: false,
-      scope: ['profile', 'email'] //TODO: add calendar in the scope
-  })(req, res, next)
-
-
-// callback url upon successful google authentication
-export const googleSuccess = () => {
-  passport.authenticate('google', {session: false}), (req, res) => {
-    authService.signToken(req, res);
-  }
-}
-
-// route to check token with postman.
-// using middleware to check for authorization header
-
-/*
-app.get('/verify', authService.checkTokenMW, (req, res) => {
-    authService.verifyToken(req, res);
-    if (null === req.authData) {
-        res.sendStatus(403);
-    } else {
-        res.json(req.authData);
-    }
-});
-*/
-export const googleVerify = () => {
-    
-    authService.verifyToken(req, res);
-    
-    if (null === req.authData) {
-        res.sendStatus(403);
-    } else {
-        res.json(req.authData);
-    }
-
-}
-
 
 export const password = () => (req, res, next) =>
   passport.authenticate('password', { session: false }, (err, user, info) => {

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { login, googleLogin, googleAuth, googleSuccess } from './controller'
+import { login, googleAuth, googleSuccess } from './controller'
 import { password, master } from '../../services/passport'
 
 const router = new Router()
@@ -14,7 +14,7 @@ router.get('/google',
 
 router.get('/google-success',
   googleSuccess(),
-  googleLogin)
+  login)
 
 /*
 

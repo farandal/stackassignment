@@ -23,7 +23,7 @@ router.post('/',
 router.get('/google',
   googleAuth(),
   login)
-
+/*
 router.get('/google-success',
   googleSuccess(),
   login)
@@ -31,6 +31,6 @@ router.get('/google-success',
 router.get('/google-verify',
   googleVerify(),
   login)
-
+*/
 
 export default router

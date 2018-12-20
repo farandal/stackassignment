@@ -1,5 +1,4 @@
 const { resolve } = require('path');
-
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -29,11 +28,38 @@ const config = {
 
   context: resolve(__dirname, 'app'),
 
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    /*new webpack.LoaderOptionsPlugin({
+      test: /\.jsx?$/,
+      options: {
+        eslint: {
+          configFile: resolve(__dirname, ".eslintrc"),
+          cache: false
+        }
+      }
+    }),*/
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    /*new ExtractTextPlugin({
+      filename: './styles/style.css',
+      disable: false,
+      allChunks: true
+    }),*/
+    new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
+    new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
+
+    new OpenBrowserPlugin({
+      url: 'http://stackassignment-backend-local.farandal.com:8080'
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+
   devServer: {
     hot: true,
     contentBase: resolve(__dirname, 'build'),
     historyApiFallback: true,
-    publicPath: '/'
+    publicPath: '/',
+    disableHostCheck: true
   },
 
   resolve: {
@@ -145,33 +171,7 @@ const config = {
         ]
       }
     ]
-  },
-
-  plugins: [
-    new webpack.NamedModulesPlugin(),
-    /*new webpack.LoaderOptionsPlugin({
-      test: /\.jsx?$/,
-      options: {
-        eslint: {
-          configFile: resolve(__dirname, ".eslintrc"),
-          cache: false
-        }
-      }
-    }),*/
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new ExtractTextPlugin({
-      filename: './styles/style.css',
-      disable: false,
-      allChunks: true
-    }),
-    new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-
-    new CopyWebpackPlugin([{ from: 'assets/images', to: 'images' }]),
-    new CopyWebpackPlugin([{ from: 'assets/sounds', to: 'sounds' }]),
-
-    new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  }
 };
 
 module.exports = config;

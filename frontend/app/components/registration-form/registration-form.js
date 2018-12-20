@@ -13,6 +13,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -41,6 +43,14 @@ const styles = theme => ({
     color: 'grey'
   }
 });
+
+const responseGoogle = response => {
+  console.log('response google', response);
+};
+
+const logout = some => {
+  console.log('logout google', some);
+};
 
 class RegistrationForm extends React.Component {
   constructor(props) {
@@ -77,9 +87,13 @@ class RegistrationForm extends React.Component {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button onClick={this.handleSubmit} size='large'>
-              Login
-            </Button>
+            <GoogleLogin
+              clientId='341947537567-s6532eu6tkk44qkers2mkf8p7mglkt62.apps.googleusercontent.com'
+              buttonText='Login'
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+            />
+            <GoogleLogout buttonText='Logout' onLogoutSuccess={logout} />
           </CardActions>
         </Card>
       </form>

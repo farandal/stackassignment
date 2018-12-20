@@ -31,14 +31,38 @@ const config = {
     root: path.join(__dirname, '..'),
     port:  requireProcessEnv('PORT'),
     ip:  requireProcessEnv('IP'),
-    apiRoot: process.env.API_ROOT || ''
+    apiRoot: process.env.API_ROOT || '',
+    masterKey: requireProcessEnv('MASTER_KEY'),
+    jwtSecret: requireProcessEnv('JWT_SECRET'),
+    google: {
+        clientID: requireProcessEnv('GOOGLE_OAUTH_CLIENT_ID'),
+        clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET')
+    },
+    mongo: {
+      options: {
+        db: {
+          safe: true
+        }
+      }
+    }
   },
-  test: { },
+  test: { 
+  },
   development: {
-   
+    mongo: {
+      uri: requireProcessEnv('MONGODB_DEV_URL'),
+      options: {
+        debug: true
+      }
+    }
   },
   production: {
- 
+    mongo: {
+      uri: requireProcessEnv('MONGODB_PROD_URL'),
+      options: {
+        debug: true
+      }
+    }
   }
 }
 

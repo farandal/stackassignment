@@ -3,5 +3,5 @@ WORKDIR /be
 COPY package.json /be
 RUN npm install
 COPY . /be
-CMD node index.js
-EXPOSE 80
+CMD [ "npm", "start" ]
+EXPOSE 8888

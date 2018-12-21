@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import style from './home.scss';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -36,8 +36,8 @@ class Home extends React.Component {
   }
 }
 
-Home.propTypes = {
+/*Home.propTypes = {
   title: PropTypes.string
-};
+};*/
 
 export default Home;

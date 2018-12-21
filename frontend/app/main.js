@@ -1,15 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
 import Root from './config/Root';
+import itemReducer from './reducers/itemReducer';
+import appReducer from './reducers/appReducer';
 
-const render = (Component) => {
+const rootReducer = combineReducers({
+  itemReducer,
+  appReducer
+});
+
+const store = createStore(rootReducer);
+
+const render = Component => {
   ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
-    document.getElementById('root'),
+    <Provider store={store}>
+      <AppContainer>
+        <Component />
+      </AppContainer>
+    </Provider>,
+    document.getElementById('root')
   );
 };
 

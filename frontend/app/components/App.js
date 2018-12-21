@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -8,6 +9,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { blue, lightGreen, green } from '@material-ui/core/colors';
 import Home from './home/home';
 import NavigationBar from './navigation-bar/navigation-bar';
+import Dashboard from './dashboard/dashboard';
 import style from './App.scss';
 
 const theme = createMuiTheme({
@@ -40,6 +42,7 @@ class App extends Component {
           <div className='AppBody'>
             <Switch>
               <Route path='/' component={Home} exact />
+              <Route path='/dashboard' component={Dashboard} exact />
             </Switch>
           </div>
         </MuiThemeProvider>

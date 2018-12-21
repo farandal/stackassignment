@@ -56,6 +56,7 @@ class NavigationBar extends React.Component {
             <Typography variant='h6' color='inherit' className={classes.grow}>
               Calendar App
             </Typography>
+
             {auth && (
               <div>
                 <IconButton

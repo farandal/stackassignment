@@ -16,6 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 
+import { withRouter } from 'react-router-dom';
+
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -76,6 +78,8 @@ class RegistrationForm extends React.Component {
         type: 'USER_LOGIN',
         data
       });
+
+      this.props.history.push('/dashboard');
     }
   };
 
@@ -134,4 +138,5 @@ const mapStateToProps = state => {
 };
 
 const styledComponent = withStyles(styles)(RegistrationForm);
-export default connect(mapStateToProps)(styledComponent);
+const routedComponent = withRouter(styledComponent);
+export default connect(mapStateToProps)(routedComponent);

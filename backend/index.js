@@ -5,5 +5,5 @@
  * Observations: Babel interpreter is used to interpret Es6 imports
  */
 
-require('babel-core/register')
-exports = module.exports = require('./app')
+require('babel-register');
+exports = module.exports = require('./app');

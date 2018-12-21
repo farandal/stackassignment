@@ -1,5 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MailIcon from '@material-ui/icons/Mail';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import logo from '../../assets/images/logo_square.png';
 import { withStyles } from '@material-ui/core/styles';
 import style from './sidebar.scss';
@@ -15,7 +29,7 @@ const styles = theme => ({
   }
 });
 
-class Sidebar extends React.Component {
+class SideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -25,12 +39,24 @@ class Sidebar extends React.Component {
     const { classes } = this.props;
     return (
       <div className='side-bar'>
+        <div className={classes.toolbar} />
         <div className='sidebar-logo-container floating'>
           <img src={logo} />
         </div>
+        <Divider />
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Sidebar);
+export default withStyles(styles)(SideBar);

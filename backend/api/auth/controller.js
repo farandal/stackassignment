@@ -1,38 +1,44 @@
-import { sign, verifyToken } from '../../services/jwt'
-import { success } from '../../services/response/'
-import passport from 'passport'
+import { sign, verifyToken } from '../../services/jwt';
+import { success } from '../../services/response/';
+import passport from 'passport';
 
-export const login = ({ user }, res, next) =>
+export const redirect = (res, url) => {
+  res.redirect(url);
+  return null;
+};
+
+export const login = (req, res, next) => {
+  console.log(req);
+  const user = req.user;
   sign(user.id)
-    .then((token) => ({ token, user: user.view(true) }))
+    .then(token => ({ token, user: user.view(true) }))
     .then(success(res, 201))
-    .catch(next)
+    .catch(next);
+};
 
 export const googleAuth = () => (req, res, next) => {
   passport.authenticate('google', {
-      session: false,
-      scope: ['profile', 'email'] //TODO: add calendar in the scope
-  })(req, res, next)
-}
+    session: false,
+    access_type: 'offline',
+    scope: ['profile', 'email'] //TODO: add calendar in the scope
+  })(req, res, next);
+};
 
-// callback url upon successful google authentication
-export const googleSuccess = ()  => (req, res, next) => {
+export const googleCallback = () => (req, res, next) => {
   passport.authenticate('google', {
-  	session: false
-  })(req, res, next)
-}
- 
-// route to check token with postman.
-// using middleware to check for authorization header
+    session: false
+  })(req, res, next);
+};
 
-export const googleVerify = () => {
-    
-    verifyToken(req, res);
-    
-    if (null === req.authData) {
-        res.sendStatus(403);
-    } else {
-        res.json(req.authData);
-    }
-
-}
+export const redirectToFrontend = (req, res, next) => {
+  console.log(req);
+  const user = req.user;
+  sign(user.id)
+    .then(token => {
+      redirect(
+        res,
+        `http://stackassignment-backend-local.farandal.com:8080/dashboard?token=${token}`
+      );
+    })
+    .catch(next);
+};

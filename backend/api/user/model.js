@@ -17,6 +17,9 @@ const userSchema = new Schema({
   accessToken: {
     type: String
   },
+  refreshToken: {
+    type: String
+  },
   role: {
     type: String,
     enum: roles,

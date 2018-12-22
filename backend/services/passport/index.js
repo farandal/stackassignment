@@ -5,7 +5,7 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as CustomBearerStrategy } from 'passport-http-custom-bearer';
-import { jwtSecret, masterKey, google } from '../../config';
+import { jwtSecret, masterKey, google as gconfig } from '../../config';
 import User, { schema } from '../../api/user/model';
 
 /* GOOGLE AUTHENTICATION */
@@ -14,15 +14,16 @@ passport.use(
   new GoogleStrategy(
     {
       // options for strategy
-      callbackURL: google.callback,
-      clientID: google.clientID,
-      clientSecret: google.clientSecret
+      callbackURL: gconfig.callback,
+      clientID: gconfig.clientID,
+      clientSecret: gconfig.clientSecret
     },
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value;
 
       console.log('email', email);
       console.log('accessToken:', accessToken);
+      console.log('refreshToken:', refreshToken);
       console.log('profile', profile);
 
       // check if user already exists
@@ -38,7 +39,8 @@ passport.use(
         const newUser = await new User({
           email: email,
           googleId: profile.id,
-          accessToken: accessToken
+          accessToken: accessToken,
+          refreshToken: refreshToken
         }).save();
         return done(null, newUser);
       }
@@ -58,6 +60,9 @@ passport.use(
 );
 
 export const master = () => passport.authenticate('master', { session: false });
+
+export const googleauth = () =>
+  passport.authenticate('google', { session: false });
 
 export const token = ({ required, roles = User.roles } = {}) => (
   req,

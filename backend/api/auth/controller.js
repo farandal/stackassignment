@@ -56,10 +56,7 @@ export const redirectToFrontend = (req, res, next) => {
       console.log('-----------');
       console.log('USER TOKEN', token);
       console.log('-----------');
-      redirect(
-        res,
-        `http://stackassignment-backend-local.farandal.com:8080?token=${token}`
-      );
+      redirect(res, `${gconfig.callback}?token=${token}`);
     })
     .catch(next);
 };

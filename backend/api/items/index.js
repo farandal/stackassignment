@@ -11,10 +11,12 @@ import { insert, index, show, update, destroy, calendar } from './controller';
 import { middleware as query } from 'querymen';
 import { middleware as body } from 'bodymen';
 import { master, token, googleauth } from '../../services/passport';
+import bodyParser from 'body-parser';
 
 const router = new Router();
+const jsonParser = bodyParser.urlencoded({ extended: false });
 
-router.post('/insert', token({ required: true }), insert);
+router.post('/insert', jsonParser, token({ required: true }), insert);
 
 router.post('/calendar', token({ required: true }), calendar);
 

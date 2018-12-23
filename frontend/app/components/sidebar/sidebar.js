@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import { Link } from 'react-router-dom';
 
 import logo from '../../assets/images/logo_square.png';
 import { withStyles } from '@material-ui/core/styles';
@@ -45,14 +46,22 @@ class SideBar extends React.Component {
         </div>
         <Divider />
         <List>
-          {['List', 'Create'].map((text, index) => (
-            <ListItem button key={text}>
+          <Link to='/dashboard/list'>
+            <ListItem button key='list'>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <MailIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary='List' />
             </ListItem>
-          ))}
+          </Link>
+          <Link to='/dashboard/create'>
+            <ListItem button key='create'>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary='Create' />
+            </ListItem>
+          </Link>
         </List>
       </div>
     );

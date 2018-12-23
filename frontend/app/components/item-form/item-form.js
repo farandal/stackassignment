@@ -55,6 +55,7 @@ class ItemForm extends React.Component {
   };
 
   componentDidMount() {
+    console.log('Item Form Mounted');
     ValidatorForm.addValidationRule('notEmpty', value => {
       if (value !== '') {
         return true;

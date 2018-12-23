@@ -1,18 +1,22 @@
+//REACT
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { createStore, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
+//CONFIG
 import Root from './config/Root';
-import itemReducer from './reducers/itemReducer';
-import appReducer from './reducers/appReducer';
+//REDUX
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { logger } from 'redux-logger';
+import { Provider } from 'react-redux';
+import itemReducer from './reducers/item.reducer';
+import userReducer from './reducers/user.reducer';
 
 const rootReducer = combineReducers({
   itemReducer,
-  appReducer
+  userReducer
 });
-
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const render = Component => {
   ReactDOM.render(

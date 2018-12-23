@@ -19,8 +19,10 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import ItemForm from '../item-form/item-form';
+import ItemList from '../item-list/item-list';
 import SideBar from '../sidebar/sidebar';
 import style from './dashboard.scss';
+import { Link, Route, Switch } from 'react-router-dom';
 
 const drawerWidth = 300;
 
@@ -30,8 +32,16 @@ class Dashboard extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    console.log('Dashboard Mounted');
+  }
+
+  componentWillMount() {
+    console.log('Dashboard will Mount');
+  }
+
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, match } = this.props;
 
     return (
       <div className={classes.root}>
@@ -63,7 +73,12 @@ class Dashboard extends React.Component {
           </Hidden>
         </nav>
         <main className={classes.content}>
-          <ItemForm />
+          <Route
+            path='/(dashboard|dashboard/list)/'
+            component={ItemList}
+            exact
+          />
+          <Route path='/dashboard/create' component={ItemForm} />
         </main>
       </div>
     );

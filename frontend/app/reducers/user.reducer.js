@@ -1,7 +1,9 @@
-const appReducer = (state = [], action) => {
+import { userConstants } from '../constants';
+
+const userReducer = (state = [], action) => {
   switch (action.type) {
-    case 'USER_LOGIN':
-      console.log('USER_LOGIN', action.data);
+    case 'GOOGLE_LOGIN':
+      console.log('GOOGLE_LOGIN', action.data);
       return state.concat([action.data]);
     case 'USER_LOGOUT':
       console.log('USER_LOGOUT', action.data);
@@ -10,4 +12,4 @@ const appReducer = (state = [], action) => {
       return state;
   }
 };
-export default appReducer;
+export default userReducer;

@@ -12,11 +12,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
-
 import { withRouter } from 'react-router-dom';
+import { userActions } from '../../actions';
+import { API_URL } from '../../app.config';
 
 const styles = theme => ({
   container: {
@@ -67,19 +67,23 @@ class RegistrationForm extends React.Component {
       this.setState({
         loggedIn: true,
         accessToken: response.accessToken,
+        tokenId: response.tokenId,
         googleId: response.googleId,
         email: response.profileObj.email,
         profileObj: response.profileObj
       });
 
-      const data = this.state;
+      const user = {
+        access_token: response.accessToken,
+        token_id: response.tokenId,
+        google_id: response.googleId,
+        email: response.profileObj.email
+      };
 
-      this.props.dispatch({
-        type: 'USER_LOGIN',
-        data
-      });
+      //this.props.history.push('/dashboard');
 
-      this.props.history.push('/dashboard');
+      const { dispatch } = this.props;
+      dispatch(userActions.register(user));
     }
   };
 
@@ -120,6 +124,8 @@ class RegistrationForm extends React.Component {
             {this.state.loggedIn && (
               <GoogleLogout buttonText='Logout' onLogoutSuccess={this.logout} />
             )}
+
+            <a href={`${API_URL}/auth/google`}>Backend authentication</a>
           </CardActions>
         </Card>
       </form>
@@ -139,4 +145,5 @@ const mapStateToProps = state => {
 
 const styledComponent = withStyles(styles)(RegistrationForm);
 const routedComponent = withRouter(styledComponent);
+
 export default connect(mapStateToProps)(routedComponent);

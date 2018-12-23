@@ -131,11 +131,11 @@ export const insert = ({ body, user }, res, next) => {
   });
 
   const calendar = google.calendar({ version: 'v3', auth: authclient });
-  const event = JSON.parse(body.event);
+
   const object = {
     auth: authclient,
-    calendarId: body.calendarId || user.calendarId,
-    resource: event
+    calendarId: user.calendarId,
+    resource: body
   };
   console.log('INSERTING EVENT', object);
   calendar.events.insert(object, function(err, createdEvent) {

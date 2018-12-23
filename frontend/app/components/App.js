@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Router } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -54,12 +54,12 @@ class App extends Component {
           <NavigationBar />
         </div>
         <div className='AppBody'>
-          <BrowserRouter>
+          <Router history={history}>
             <Switch>
               <Route path='/' component={Home} exact />
               <Route path='/dashboard' component={Dashboard} />
             </Switch>
-          </BrowserRouter>
+          </Router>
         </div>
       </MuiThemeProvider>
     );

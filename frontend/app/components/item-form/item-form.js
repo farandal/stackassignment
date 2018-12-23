@@ -21,7 +21,6 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { withRouter } from 'react-router-dom';
 import { itemActions } from '../../actions';
 import style from './item-form.scss';
-import { history } from '../../helpers';
 
 class ItemForm extends React.Component {
   constructor(props) {
@@ -57,7 +56,8 @@ class ItemForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.logs.type === 'alert-success') {
       console.log('redirecting user to list view');
-      history.push('/dashboard');
+      console.log(this.props.history);
+      this.props.history.push('/dashboard');
     }
   }
 

@@ -45,7 +45,6 @@ function createItem(item) {
     itemService.createItem(item).then(
       response => {
         dispatch(logActions.success({ method: CREATE_ITEM, data: response }));
-        //should ? //dispatch(getItems());
       },
       error => {
         //dispatch(failure(DELETE_ITEM));

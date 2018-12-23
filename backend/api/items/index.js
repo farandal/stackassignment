@@ -25,5 +25,6 @@ router.post('/:id', token({ required: true }), show);
 router.put('/:id', token({ required: true }), update);
 
 router.delete('/:id', token({ required: true }), destroy);
+router.post('/delete/:id', token({ required: true }), destroy);
 
 export default router;

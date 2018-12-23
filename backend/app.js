@@ -27,14 +27,6 @@ setImmediate(() => {
   });
 });
 
-/*
-var rawBodySaver = function(req, res, buf, encoding) {
-  if (buf && buf.length) {
-    req.rawBody = buf.toString(encoding || 'utf8');
-  }
-};
-*/
-
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json

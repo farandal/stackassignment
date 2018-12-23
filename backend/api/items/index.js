@@ -14,7 +14,7 @@ import { master, token, googleauth } from '../../services/passport';
 import bodyParser from 'body-parser';
 
 const router = new Router();
-const jsonParser = bodyParser.urlencoded({ extended: false });
+const jsonParser = bodyParser.json();
 
 router.post('/insert', jsonParser, token({ required: true }), insert);
 

@@ -9,7 +9,6 @@ import { env, port, ip, apiRoot, mongo } from './config';
 import express from './services/express';
 import mongoose from './services/mongoose';
 import api from './api';
-import bodyParser from 'body-parser';
 const app = express(apiRoot, api);
 const server = http.createServer(app);
 
@@ -26,10 +25,5 @@ setImmediate(() => {
     );
   });
 });
-
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
-app.use(bodyParser.json({ type: 'application/*+json' }));
 
 export default app;

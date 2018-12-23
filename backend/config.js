@@ -39,6 +39,7 @@ const config = {
       clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET'),
       callback: requireProcessEnv('GOOGLE_OAUTH_REDIRECT_URL')
     },
+    webapp: requireProcessEnv('WEBAPP'),
     mongo: {
       uri: requireProcessEnv('MONGODB_URL'),
       options: {

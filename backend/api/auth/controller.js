@@ -1,7 +1,7 @@
 import { sign, verifyToken } from '../../services/jwt';
 import { success } from '../../services/response/';
 import passport from 'passport';
-import { google as gconfig } from '../../config';
+import { webapp, google as gconfig } from '../../config';
 import { google } from 'googleapis';
 import request from 'request';
 import fs from 'fs';
@@ -56,7 +56,7 @@ export const redirectToFrontend = (req, res, next) => {
       console.log('-----------');
       console.log('USER TOKEN', token);
       console.log('-----------');
-      redirect(res, `${gconfig.callback}?token=${token}`);
+      redirect(res, `${webapp}?token=${token}`);
     })
     .catch(next);
 };

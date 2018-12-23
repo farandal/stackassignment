@@ -21,6 +21,7 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { withRouter } from 'react-router-dom';
 import { itemActions } from '../../actions';
 import style from './item-form.scss';
+import { history } from '../../helpers';
 
 class ItemForm extends React.Component {
   constructor(props) {
@@ -54,13 +55,9 @@ class ItemForm extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (
-      nextProps &&
-      nextProps.log.type &&
-      nextProps.log.type === 'LOG_SUCCESS' &&
-      nextProps.log.message.method === 'CREATE_ITEM'
-    ) {
-      history.push('/dashboard/list');
+    if (nextProps.logs.type === 'alert-success') {
+      console.log('redirecting user to list view');
+      history.push('/dashboard');
     }
   }
 

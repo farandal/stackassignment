@@ -111,8 +111,8 @@ passport.use(
     {
       secretOrKey: jwtSecret,
       jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromBodyField('token')
-        //ExtractJwt.fromAuthHeaderWithScheme('Bearer') To implement in production
+        ExtractJwt.fromBodyField('token'), //For development
+        ExtractJwt.fromAuthHeaderWithScheme('Bearer')
       ])
     },
     ({ id }, done) => {

@@ -3,14 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import App from '../components/App';
 
 const Root = () => {
-  return (
-    <Router>
-      <Switch>
-        <Route path="/" component={App} exact />
-      </Switch>
-    </Router>
-  );
+  return <App />;
 };
 
 export default Root;
-

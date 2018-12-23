@@ -6,14 +6,17 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import style from './registration-form.css';
+import style from './registration-form.scss';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { userActions } from '../../actions';
+import { API_URL } from '../../app.config';
 
 const styles = theme => ({
   container: {
@@ -44,30 +47,52 @@ const styles = theme => ({
   }
 });
 
-const responseGoogle = response => {
-  console.log('response google', response);
-};
-
-const logout = some => {
-  console.log('logout google', some);
+const initialState = {
+  loggedIn: false,
+  accessToken: null,
+  googleId: null,
+  email: null,
+  profileObj: {}
 };
 
 class RegistrationForm extends React.Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {};
+    //this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = initialState;
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    console.log(this.state);
-    //api.signin(this.state)
-  }
+  responseGoogle = response => {
+    if (response && response.accessToken && response.accessToken != '') {
+      this.setState({
+        loggedIn: true,
+        accessToken: response.accessToken,
+        tokenId: response.tokenId,
+        googleId: response.googleId,
+        email: response.profileObj.email,
+        profileObj: response.profileObj
+      });
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
+      const user = {
+        access_token: response.accessToken,
+        token_id: response.tokenId,
+        google_id: response.googleId,
+        email: response.profileObj.email
+      };
+
+      //this.props.history.push('/dashboard');
+
+      const { dispatch } = this.props;
+      dispatch(userActions.register(user));
+    }
+  };
+
+  logout = some => {
+    this.setState(initialState);
+    const data = this.state;
+    this.props.dispatch({
+      type: 'USER_LOGOUT',
+      data
     });
   };
 
@@ -87,13 +112,20 @@ class RegistrationForm extends React.Component {
             </Typography>
           </CardContent>
           <CardActions>
-            <GoogleLogin
-              clientId='341947537567-s6532eu6tkk44qkers2mkf8p7mglkt62.apps.googleusercontent.com'
-              buttonText='Login'
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-            />
-            <GoogleLogout buttonText='Logout' onLogoutSuccess={logout} />
+            {!this.state.loggedIn && (
+              <GoogleLogin
+                clientId='341947537567-s6532eu6tkk44qkers2mkf8p7mglkt62.apps.googleusercontent.com'
+                buttonText='Login'
+                onSuccess={this.responseGoogle}
+                onFailure={this.responseGoogle}
+              />
+            )}
+
+            {this.state.loggedIn && (
+              <GoogleLogout buttonText='Logout' onLogoutSuccess={this.logout} />
+            )}
+
+            <a href={`${API_URL}/auth/google`}>Backend authentication</a>
           </CardActions>
         </Card>
       </form>
@@ -105,4 +137,13 @@ RegistrationForm.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(RegistrationForm);
+const mapStateToProps = state => {
+  return {
+    app: state.appReducer
+  };
+};
+
+const styledComponent = withStyles(styles)(RegistrationForm);
+const routedComponent = withRouter(styledComponent);
+
+export default connect(mapStateToProps)(routedComponent);

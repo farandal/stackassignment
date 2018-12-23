@@ -112,20 +112,7 @@ class RegistrationForm extends React.Component {
             </Typography>
           </CardContent>
           <CardActions>
-            {!this.state.loggedIn && (
-              <GoogleLogin
-                clientId='341947537567-s6532eu6tkk44qkers2mkf8p7mglkt62.apps.googleusercontent.com'
-                buttonText='Login'
-                onSuccess={this.responseGoogle}
-                onFailure={this.responseGoogle}
-              />
-            )}
-
-            {this.state.loggedIn && (
-              <GoogleLogout buttonText='Logout' onLogoutSuccess={this.logout} />
-            )}
-
-            <a href={`${API_URL}/auth/google`}>Backend authentication</a>
+            <a href={`${API_URL}/auth/google`}>LOGIN WITH GOOGLE</a>
           </CardActions>
         </Card>
       </form>

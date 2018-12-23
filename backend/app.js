@@ -9,7 +9,7 @@ import { env, port, ip, apiRoot, mongo } from './config';
 import express from './services/express';
 import mongoose from './services/mongoose';
 import api from './api';
-
+import bodyParser from 'body-parser';
 const app = express(apiRoot, api);
 const server = http.createServer(app);
 
@@ -26,5 +26,15 @@ setImmediate(() => {
     );
   });
 });
+
+var rawBodySaver = function(req, res, buf, encoding) {
+  if (buf && buf.length) {
+    req.rawBody = buf.toString(encoding || 'utf8');
+  }
+};
+
+app.use(bodyParser.json({ verify: rawBodySaver }));
+app.use(bodyParser.urlencoded({ verify: rawBodySaver, extended: true }));
+app.use(bodyParser.raw({ verify: rawBodySaver, type: '*/*' }));
 
 export default app;

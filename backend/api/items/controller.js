@@ -135,7 +135,7 @@ export const insert = ({ body, user }, res, next) => {
   const object = {
     auth: authclient,
     calendarId: user.calendarId,
-    resource: JSON.parse(body)
+    resource: body
   };
   console.log('INSERTING EVENT', object);
   calendar.events.insert(object, function(err, createdEvent) {

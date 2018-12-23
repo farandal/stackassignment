@@ -142,7 +142,7 @@ export const insert = ({ body, user }, res, next) => {
     if (err) {
       res.status(409).json({
         message: 'There was an error contacting the Calendar service',
-        error: err
+        error: err.message
       });
 
       return;

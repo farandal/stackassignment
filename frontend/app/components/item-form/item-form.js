@@ -36,6 +36,8 @@ class ItemForm extends React.Component {
         .add(4, 'hour')
         .format('YYYY-MM-DDTHH:mm:ss')
     };
+
+    console.log(props);
   }
 
   handleChange = name => event => {
@@ -50,6 +52,17 @@ class ItemForm extends React.Component {
     console.log('submit', item);
     this.props.dispatch(itemActions.createItem(item));
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps &&
+      nextProps.log.type &&
+      nextProps.log.type === 'LOG_SUCCESS' &&
+      nextProps.log.message.method === 'CREATE_ITEM'
+    ) {
+      history.push('/dashboard/list');
+    }
+  }
 
   componentWillMount() {
     //GET THE CALENDAR ID
@@ -237,9 +250,11 @@ ItemForm.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = store => {
   return {
-    items: state.itemReducer
+    items: store.itemReducer,
+    completed: store.itemReducer.completed,
+    logs: store.logReducer
   };
 };
 

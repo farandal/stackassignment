@@ -37,8 +37,7 @@ const config = {
     google: {
       clientID: requireProcessEnv('GOOGLE_OAUTH_CLIENT_ID'),
       clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET'),
-      callback:
-        'http://stackassignment-backend-local.farandal.com:8888/auth/google-success'
+      callback: requireProcessEnv('GOOGLE_OAUTH_REDIRECT_URL')
     },
     mongo: {
       uri: requireProcessEnv('MONGODB_URL'),

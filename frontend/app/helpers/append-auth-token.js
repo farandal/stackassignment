@@ -1,11 +1,15 @@
-export function appendAuthToken() {
+export function appendAuthToken(type) {
   let token = localStorage.getItem('jwt');
-  if (token) {
-    return {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
+  const headerObj = {};
+  if (type === 'json') {
+    headerObj['Content-Type'] = 'application/json';
   } else {
-    return {};
+    headerObj['Content-Type'] = 'application/x-www-form-urlencoded';
   }
+
+  if (token) {
+    headerObj['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headerObj;
 }

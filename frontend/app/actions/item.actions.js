@@ -5,11 +5,60 @@ import { logActions } from './';
 
 export const itemActions = {
   getItems,
-  deleteItem
+  deleteItem,
+  createItem,
+  getCalendar
 };
 
 const GET_ITEMS = 'GET_ITEMS';
 const DELETE_ITEM = 'DELETE_ITEM';
+const GET_CALENDAR = 'GET_CALENDAR';
+const CREATE_ITEM = 'CREATE_ITEM';
+
+function getCalendar(id) {
+  return dispatch => {
+    //dispatch(request(GET_CALENDAR));
+    itemService.getCalendar().then(
+      response => {
+        //TODO: IMPORTANT check where the calendar id comes in the response
+        dispatch(
+          logActions.success({ method: GET_CALENDAR, data: response.id })
+        );
+        window.localStorage.setItem('calendarId', response.id);
+      },
+      error => {
+        //dispatch(failure(GET_CALENDAR));
+        dispatch(
+          logActions.error({
+            method: GET_CALENDAR,
+            error: error && error.message ? error.message.toString() : 'error'
+          })
+        );
+      }
+    );
+  };
+}
+
+function createItem(item) {
+  return dispatch => {
+    //dispatch(request(CREATE_ITEM));
+    itemService.createItem(item).then(
+      response => {
+        dispatch(logActions.success({ method: CREATE_ITEM, data: response }));
+        //should ? //dispatch(getItems());
+      },
+      error => {
+        //dispatch(failure(DELETE_ITEM));
+        dispatch(
+          logActions.error({
+            method: DELETE_ITEM,
+            error: error && error.message ? error.message.toString() : 'error'
+          })
+        );
+      }
+    );
+  };
+}
 
 function deleteItem(id) {
   return dispatch => {

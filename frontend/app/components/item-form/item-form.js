@@ -19,7 +19,7 @@ import timezone from 'moment-timezone';
 import { connect } from 'react-redux';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { withRouter } from 'react-router-dom';
-
+import { itemActions } from '../../actions';
 import style from './item-form.scss';
 
 class ItemForm extends React.Component {
@@ -31,10 +31,10 @@ class ItemForm extends React.Component {
       description: '',
       start: moment()
         .add(2, 'hour')
-        .format('YYYY-MM-DDTHH:mm'),
+        .format('YYYY-MM-DDTHH:mm:ss'),
       end: moment()
         .add(4, 'hour')
-        .format('YYYY-MM-DDTHH:mm')
+        .format('YYYY-MM-DDTHH:mm:ss')
     };
   }
 
@@ -48,11 +48,21 @@ class ItemForm extends React.Component {
     e.preventDefault();
     const item = this.state;
     console.log('submit', item);
-    this.props.dispatch({
-      type: 'ADD_ITEM',
-      item
-    });
+    this.props.dispatch(itemActions.createItem(item));
   };
+
+  componentWillMount() {
+    //GET THE CALENDAR ID
+    console.log(
+      'localStorage CalendarId',
+      window.localStorage.getItem('calendarId')
+    );
+
+    if (window.localStorage.getItem('calendarId')) {
+      return;
+    }
+    this.props.dispatch(itemActions.getCalendar());
+  }
 
   componentDidMount() {
     console.log('Item Form Mounted');

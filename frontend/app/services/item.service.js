@@ -2,8 +2,53 @@ import { appendAuthToken } from '../helpers';
 import { API_URL } from '../app.config';
 export const itemService = {
   getItems,
-  deleteItem
+  deleteItem,
+  createItem,
+  getCalendar
 };
+
+function getCalendar() {
+  console.log('API_URL', API_URL);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: appendAuthToken()
+  };
+  return fetch(`${API_URL}/items/calendar`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+      console.log('Get Calendar from API, logs:', res);
+      return res;
+    });
+}
+function createItem(item) {
+  console.log('API_URL', API_URL);
+
+  const parsedItem = {
+    summary: item.summary,
+    location: item.location,
+    description: item.description,
+    start: {
+      dateTime: item.start.toString() + '-07:00'
+    },
+    end: {
+      dateTime: item.end.toString() + '-07:00'
+    }
+  };
+
+  const requestOptions = {
+    method: 'POST',
+    headers: appendAuthToken('json'),
+    body: JSON.stringify(parsedItem)
+  };
+
+  return fetch(`${API_URL}/items/insert`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+      console.log('Created Event from API, logs:', res);
+      return res;
+    });
+}
 
 function deleteItem(id) {
   console.log('API_URL', API_URL);

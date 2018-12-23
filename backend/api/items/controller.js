@@ -141,7 +141,8 @@ export const insert = ({ body, user }, res, next) => {
   calendar.events.insert(object, function(err, createdEvent) {
     if (err) {
       res.status(409).json({
-        message: 'There was an error contacting the Calendar service'
+        message: 'There was an error contacting the Calendar service',
+        error: err
       });
 
       return;

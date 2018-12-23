@@ -1,0 +1,18 @@
+server {
+  client_max_body_size 128M;
+  listen ${PORT};
+  server_name ${SERVER_NAME};
+  root ${ROOT};
+  index index.html;
+
+  access_log ${ACCESS_LOG};
+  error_log  ${ERROR_LOG};
+   sendfile off;
+   expires off;
+   location / {
+     try_files $uri $uri/ =404;
+   }
+   location ~* \.(png|jpg|jpeg)$ {
+     root /images/;
+   }
+}

@@ -7,14 +7,16 @@
  */
 
 import { Router } from 'express';
-import { create, index, show, update, destroy, googleAuth } from './controller';
+import { insert, index, show, update, destroy, calendar } from './controller';
 import { middleware as query } from 'querymen';
 import { middleware as body } from 'bodymen';
 import { master, token, googleauth } from '../../services/passport';
 
 const router = new Router();
 
-router.post('/create', token({ required: true }), create);
+router.post('/insert', token({ required: true }), insert);
+
+router.post('/calendar', token({ required: true }), calendar);
 
 router.post('/', token({ required: true }), query(), index);
 

@@ -20,6 +20,9 @@ const userSchema = new Schema({
   refreshToken: {
     type: String
   },
+  calendarId: {
+    type: String
+  },
   role: {
     type: String,
     enum: roles,
@@ -30,10 +33,10 @@ const userSchema = new Schema({
 userSchema.methods = {
   view(full) {
     let view = {};
-    let fields = ['id', 'googleId', 'accessToken'];
+    let fields = ['id', 'email', 'googleId', 'calendarId'];
 
     if (full) {
-      fields = [...fields, 'email', 'createdAt'];
+      fields = [...fields, 'accessToken', 'createdAt'];
     }
 
     fields.forEach(field => {

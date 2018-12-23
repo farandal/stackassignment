@@ -24,7 +24,6 @@ passport.use(
       console.log('email', email);
       console.log('accessToken:', accessToken);
       console.log('refreshToken:', refreshToken);
-      console.log('profile', profile);
 
       // check if user already exists
       const currentUser = await User.findOne({ googleId: profile.id });
@@ -32,6 +31,10 @@ passport.use(
       if (currentUser) {
         console.log('User already exists in database');
         // already have the user -> return (login)
+        currentUser.accessToken = accessToken;
+        currentUser.refreshToken = refreshToken;
+        currentUser.save();
+
         return done(null, currentUser);
       } else {
         // register user and return

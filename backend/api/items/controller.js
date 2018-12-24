@@ -191,13 +191,11 @@ export const update = ({ body, params, user }, res, next) => {
 
   const calendar = google.calendar({ version: 'v3', auth: authclient });
 
-  const event = JSON.parse(body.event);
-
   const object = {
     auth: authclient,
     calendarId: user.calendarId || body.calendarId,
     eventId: params.id || body.eventId,
-    resource: event
+    resource: body.event
   };
   console.log('UPDATING EVENT', object);
   calendar.events.update(object, function(err, updatedEvent) {

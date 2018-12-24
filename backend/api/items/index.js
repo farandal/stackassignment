@@ -24,7 +24,8 @@ router.post('/', token({ required: true }), query(), index);
 
 router.post('/:id', token({ required: true }), show);
 
-router.put('/:id', token({ required: true }), update);
+router.put('/:id', jsonParser, token({ required: true }), update);
+router.post('/update/:id', jsonParser, token({ required: true }), update);
 
 router.delete('/:id', token({ required: true }), destroy);
 router.post('/delete/:id', token({ required: true }), destroy);

@@ -7,12 +7,6 @@ import request from 'request';
 import fs from 'fs';
 import readline from 'readline';
 
-const authclient = new google.auth.OAuth2(
-  gconfig.clientID,
-  gconfig.clientSecret,
-  gconfig.callback
-);
-
 const TOKEN_PATH = '../../credentials.json';
 
 export const redirect = (res, url) => {
@@ -38,6 +32,8 @@ export const googleRequestAuth = () => (req, res, next) => {
 };
 
 export const googleAuth = () => (req, res, next) => {
+  console.log(req);
+  console.log(res);
   passport.authenticate('google', {
     session: false,
     failureRedirect: '/login'

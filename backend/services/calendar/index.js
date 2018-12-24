@@ -1,23 +1,16 @@
 import { google } from 'googleapis';
 import { google as gconfig } from '../../config';
+import { getAuthClient } from '../oauth2client';
 import request from 'request-promise';
 
 const DEFAULT_CALENDAR_NAME = 'Stackassignment';
 
-const authclient = new google.auth.OAuth2(
-  gconfig.clientID,
-  gconfig.clientSecret,
-  gconfig.callback
-);
-
 export const getUserCalendar = (user, calendarName) => {
-  authclient.setCredentials({
-    access_token: user.accessToken,
-    refresh_token: user.accessToken,
-    expiry_date: true
+  const authclient = getAuthClient(user);
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: authclient
   });
-
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
 
   return new Promise(function(resolve, reject) {
     calendar.calendarList.list({}, (err, result) => {

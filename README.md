@@ -27,3 +27,5 @@ The deliverable should contain the sources including the build / project files
 Code quality, based on current best practices using node.js / javascript
 Code clarity & documentation
 Test / testability, if applicable
+
+http://stackassignment-frontend.farandal.com/

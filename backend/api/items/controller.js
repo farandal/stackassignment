@@ -152,7 +152,35 @@ export const insert = ({ body, user }, res, next) => {
   });
 };
 
-export const show = ({ params }, res, next) => res.status(200).json({});
+export const show = ({ body, params, user }, res, next) => {
+  authclient.setCredentials({
+    access_token: user.accessToken,
+    refresh_token: user.accessToken,
+    expiry_date: true
+  });
+
+  const calendar = google.calendar({ version: 'v3', auth: authclient });
+
+  const object = {
+    auth: authclient,
+    calendarId: user.calendarId,
+    eventId: params.id
+  };
+  console.log('GETTING EVENT', object);
+
+  calendar.events.get(object, function(err, event) {
+    if (err) {
+      res.status(409).json({
+        message: 'There was an error contacting the Calendar service',
+        error: err.message
+      });
+
+      return;
+    }
+
+    res.json(event.data);
+  });
+};
 
 export const update = ({ body, params, user }, res, next) => {
   authclient.setCredentials({
@@ -163,13 +191,11 @@ export const update = ({ body, params, user }, res, next) => {
 
   const calendar = google.calendar({ version: 'v3', auth: authclient });
 
-  const event = JSON.parse(body.event);
-
   const object = {
     auth: authclient,
     calendarId: user.calendarId || body.calendarId,
-    eventId: params.id || body.eventId,
-    resource: event
+    eventId: params.id,
+    resource: body
   };
   console.log('UPDATING EVENT', object);
   calendar.events.update(object, function(err, updatedEvent) {

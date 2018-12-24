@@ -24,6 +24,7 @@ import { google } from 'googleapis';
 import { google as gconfig } from '../../config';
 import { success, notFound, error } from '../../services/response/';
 import { sign, verifyToken } from '../../services/jwt';
+import { getUserCalendar } from '../../services/calendar';
 import passport from 'passport';
 
 const authclient = new google.auth.OAuth2(
@@ -31,8 +32,6 @@ const authclient = new google.auth.OAuth2(
   gconfig.clientSecret,
   gconfig.callback
 );
-
-const DEFAULT_CALENDAR_NAME = 'Stackassignment';
 
 export const index = (
   { user, querymen: { query, select, cursor } },
@@ -77,50 +76,7 @@ export const index = (
 };
 
 export const calendar = ({ body, user }, res, next) => {
-  authclient.setCredentials({
-    access_token: user.accessToken,
-    refresh_token: user.accessToken,
-    expiry_date: true
-  });
-
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
-
-  calendar.calendarList.list({}, (err, result) => {
-    if (err) {
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service'
-      });
-
-      return;
-    }
-
-    let items = result.data.items;
-    let stackcalendar = items.find(
-      item => item.summary === DEFAULT_CALENDAR_NAME
-    );
-    if (stackcalendar) {
-      res.json(stackcalendar);
-
-      user.set({ calendarId: stackcalendar.id });
-      user.save();
-    } else {
-      calendar.calendars.insert(
-        {
-          resource: {
-            summary: DEFAULT_CALENDAR_NAME,
-            title: DEFAULT_CALENDAR_NAME
-          },
-          auth: authclient
-        },
-        function(err, newCal) {
-          user.set({ calendarId: newCal });
-          user.save();
-
-          res.json(newCal.data);
-        }
-      );
-    }
-  });
+  getCalendar(user).then(calendar => res.json(calendar));
 };
 
 export const insert = ({ body, user }, res, next) => {

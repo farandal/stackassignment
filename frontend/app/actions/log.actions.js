@@ -6,12 +6,12 @@ export const logActions = {
   clear
 };
 
-function success(message) {
-  return { type: logConstants.SUCCESS, message };
+function success(method) {
+  return { type: logConstants.SUCCESS, ...method };
 }
 
-function error(message) {
-  return { type: logConstants.ERROR, message };
+function error(method) {
+  return { type: logConstants.ERROR, ...method };
 }
 
 function clear() {

@@ -19,6 +19,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import ItemForm from '../item-form/item-form';
+import EditForm from '../item-form/edit-form';
 import ItemList from '../item-list/item-list';
 import SideBar from '../sidebar/sidebar';
 import style from './dashboard.scss';
@@ -79,6 +80,7 @@ class Dashboard extends React.Component {
             exact
           />
           <Route path='/dashboard/create' component={ItemForm} />
+          <Route path='/dashboard/edit/:id' component={EditForm} />
         </main>
       </div>
     );

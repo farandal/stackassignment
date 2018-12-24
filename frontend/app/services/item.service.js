@@ -1,6 +1,8 @@
 import { appendAuthToken } from '../helpers';
 import { API_URL } from '../app.config';
 export const itemService = {
+  getItem,
+  updateItem,
   getItems,
   deleteItem,
   createItem,
@@ -8,8 +10,6 @@ export const itemService = {
 };
 
 function getCalendar() {
-  console.log('API_URL', API_URL);
-
   const requestOptions = {
     method: 'POST',
     headers: appendAuthToken()
@@ -22,8 +22,6 @@ function getCalendar() {
     });
 }
 function createItem(item) {
-  console.log('API_URL', API_URL);
-
   const parsedItem = {
     summary: item.summary,
     location: item.location,
@@ -50,9 +48,34 @@ function createItem(item) {
     });
 }
 
-function deleteItem(id) {
-  console.log('API_URL', API_URL);
+function updateItem(item) {
+  const parsedItem = {
+    summary: item.summary,
+    location: item.location,
+    description: item.description,
+    start: {
+      dateTime: item.start.toString() + '-07:00'
+    },
+    end: {
+      dateTime: item.end.toString() + '-07:00'
+    }
+  };
 
+  const requestOptions = {
+    method: 'POST',
+    headers: appendAuthToken('json'),
+    body: JSON.stringify(parsedItem)
+  };
+
+  return fetch(`${API_URL}/items/update/${item.id}`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+      console.log('Updated Event from API, logs:', res);
+      return res;
+    });
+}
+
+function deleteItem(id) {
   const requestOptions = {
     method: 'POST',
     headers: appendAuthToken()
@@ -66,14 +89,24 @@ function deleteItem(id) {
 }
 
 function getItems() {
-  console.log('API_URL', API_URL);
-  const payload = { token: localStorage.getItem('jwt') };
   const requestOptions = {
     method: 'POST',
-    headers: appendAuthToken(),
-    body: JSON.stringify(payload)
+    headers: appendAuthToken()
   };
   return fetch(`${API_URL}/items`, requestOptions)
+    .then(handleResponse)
+    .then(data => {
+      console.log('data', data);
+      return data;
+    });
+}
+
+function getItem(id) {
+  const requestOptions = {
+    method: 'POST',
+    headers: appendAuthToken()
+  };
+  return fetch(`${API_URL}/items/${id}`, requestOptions)
     .then(handleResponse)
     .then(data => {
       console.log('data', data);

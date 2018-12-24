@@ -22,10 +22,12 @@ import { withRouter } from 'react-router-dom';
 import { itemActions } from '../../actions';
 import style from './item-form.scss';
 
-class ItemForm extends React.Component {
+class EditForm extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      id: '',
       summary: '',
       location: '',
       description: '',
@@ -49,20 +51,41 @@ class ItemForm extends React.Component {
   submitItem = e => {
     e.preventDefault();
     const item = this.state;
-    console.log('submit', item);
-    this.props.dispatch(itemActions.createItem(item));
+    this.props.dispatch(itemActions.updateItem(item));
   };
 
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.logs.type === 'LOG_SUCCESS' &&
-      nextProps.logs.method === 'CREATE_ITEM'
+      nextProps.logs.method === 'GET_ITEM'
+    ) {
+      this.setState({
+        id: nextProps.logs.data.id,
+        summary: nextProps.logs.data.summary,
+        location: nextProps.logs.data.summary,
+        description: nextProps.logs.data.description,
+        start: moment(nextProps.logs.data.start.dateTime).format(
+          'YYYY-MM-DDTHH:mm:ss'
+        ),
+        end: moment(nextProps.logs.data.end.dateTime).format(
+          'YYYY-MM-DDTHH:mm:ss'
+        )
+      });
+    }
+
+    if (
+      nextProps.logs.type === 'LOG_SUCCESS' &&
+      nextProps.logs.method === 'UPDATE_ITEM'
     ) {
       this.props.history.push('/dashboard');
     }
   }
 
   componentWillMount() {
+    //GET the event data from backend
+    const { dispatch, match } = this.props;
+
+    this.props.dispatch(itemActions.getItem(match.params.id));
     //GET THE CALENDAR ID
     console.log(
       'localStorage CalendarId',
@@ -76,7 +99,7 @@ class ItemForm extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Item Form Mounted');
+    console.log('Edit Form Mounted');
     ValidatorForm.addValidationRule('notEmpty', value => {
       if (value !== '') {
         return true;
@@ -86,13 +109,13 @@ class ItemForm extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, match } = this.props;
     const { summary, location, description, start, end } = this.state;
 
     return (
       <Grid container spacing={16}>
         <ValidatorForm
-          name='itemForm'
+          name='editForm'
           ref='form'
           onSubmit={this.submitItem}
           onError={errors => console.log(errors)}
@@ -104,7 +127,7 @@ class ItemForm extends React.Component {
                 color='textSecondary'
                 gutterBottom
               >
-                Item Form
+                Edit Form
               </Typography>
             </CardContent>
             <CardActions>
@@ -244,18 +267,17 @@ const styles = theme => ({
   }
 });
 
-ItemForm.propTypes = {
+EditForm.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 const mapStateToProps = store => {
   return {
     items: store.itemReducer,
-    completed: store.itemReducer.completed,
     logs: store.logReducer
   };
 };
 
-const styledComponent = withStyles(styles)(ItemForm);
+const styledComponent = withStyles(styles)(EditForm);
 const routedComponent = withRouter(styledComponent);
 export default connect(mapStateToProps)(routedComponent);

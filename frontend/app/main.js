@@ -11,10 +11,12 @@ import { logger } from 'redux-logger';
 import { Provider } from 'react-redux';
 import itemReducer from './reducers/item.reducer';
 import userReducer from './reducers/user.reducer';
+import logReducer from './reducers/log.reducer';
 
 const rootReducer = combineReducers({
   itemReducer,
-  userReducer
+  userReducer,
+  logReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 

@@ -194,8 +194,8 @@ export const update = ({ body, params, user }, res, next) => {
   const object = {
     auth: authclient,
     calendarId: user.calendarId || body.calendarId,
-    eventId: params.id || body.eventId,
-    resource: body.event
+    eventId: params.id,
+    resource: body
   };
   console.log('UPDATING EVENT', object);
   calendar.events.update(object, function(err, updatedEvent) {

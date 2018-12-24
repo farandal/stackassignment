@@ -3,15 +3,9 @@ import { logConstants } from '../constants';
 const logReducer = (state = [], action) => {
   switch (action.type) {
     case logConstants.SUCCESS:
-      return {
-        type: 'alert-success',
-        message: action.message
-      };
+      return action;
     case logConstants.ERROR:
-      return {
-        type: 'alert-danger',
-        message: action.message
-      };
+      return action;
     case logConstants.CLEAR:
       return {};
     default:

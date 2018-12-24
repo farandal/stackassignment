@@ -33,10 +33,6 @@ class ItemList extends React.Component {
 
   componentWillMount() {
     console.log('ItemList WillMount');
-    //TODO
-    //Make a call to the api, and set the results in the state
-    //make sure the state holds the elements in a events array
-    //consider to have a service to deal with the api requests, or use Redux Actions to achieve this
     const { dispatch } = this.props;
     this.props.dispatch(itemActions.getItems());
   }
@@ -47,15 +43,13 @@ class ItemList extends React.Component {
 
   editItem = (e, id) => {
     e.preventDefault();
-    console.log('Edit', id);
+    this.props.history.push(`/dashboard/edit/${id}`);
   };
 
   deleteItem = (e, delete_id) => {
     e.preventDefault();
-    console.log('Delete', delete_id);
+    console.log('DeleteItem', delete_id);
     this.props.dispatch(itemActions.deleteItem(delete_id));
-    //this.props.dispatch(itemActions.getItems());
-    //console.log(this.props.items);
   };
 
   render() {

@@ -4,6 +4,8 @@ import { history } from '../helpers';
 import { logActions } from './';
 
 export const itemActions = {
+  getItem,
+  updateItem,
   getItems,
   deleteItem,
   createItem,
@@ -14,6 +16,8 @@ const GET_ITEMS = 'GET_ITEMS';
 const DELETE_ITEM = 'DELETE_ITEM';
 const GET_CALENDAR = 'GET_CALENDAR';
 const CREATE_ITEM = 'CREATE_ITEM';
+const GET_ITEM = 'GET_ITEM';
+const UPDATE_ITEM = 'UPDATE_ITEM';
 
 function getCalendar(id) {
   return dispatch => {
@@ -135,6 +139,48 @@ function getItems() {
   };
 }
 
+function getItem(id) {
+  return dispatch => {
+    //dispatch(request(GET_ITEM));
+    itemService.getItem(id).then(
+      item => {
+        dispatch(logActions.success({ method: GET_ITEM, data: item }));
+        //dispatch(gettedItem(item));
+      },
+
+      error => {
+        //dispatch(failure(GET_ITEMS));
+        dispatch(
+          logActions.error({
+            method: GET_ITEM,
+            error: error && error.message ? error.message.toString() : 'error'
+          })
+        );
+      }
+    );
+  };
+}
+
+function updateItem(item) {
+  return dispatch => {
+    //dispatch(request(UPDATE_ITEM));
+    itemService.updateItem(item).then(
+      response => {
+        dispatch(logActions.success({ method: UPDATE_ITEM, data: response }));
+      },
+      error => {
+        //dispatch(failure(UPDATE_ITEM));
+        dispatch(
+          logActions.error({
+            method: UPDATE_ITEM,
+            error: error && error.message ? error.message.toString() : 'error'
+          })
+        );
+      }
+    );
+  };
+}
+
 function request(data) {
   return { type: itemConstants.ITEM_REQUEST_SENT, data };
 }
@@ -147,6 +193,9 @@ function append(item) {
 function appendItems(items) {
   return { type: 'APPEND_ITEMS', items: items };
 }
+/*function gettedItem(item) {
+  return { type: 'GET_ITEM', item: item };
+}*/
 function failure(error) {
   return { type: itemConstants.ITEM_REQUEST_FAILURE, error };
 }

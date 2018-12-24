@@ -7,13 +7,19 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as CustomBearerStrategy } from 'passport-http-custom-bearer';
 import { jwtSecret, masterKey, google as gconfig } from '../../config';
 import User, { schema } from '../../api/user/model';
+import { getUserCalendar } from '../../services/calendar';
+
+/*
+Resources:
+Interesting article about working with refresh tokens
+-https://symfonycasts.com/screencast/oauth/refresh-token
+*/
 
 /* GOOGLE AUTHENTICATION */
 passport.use(
   'google',
   new GoogleStrategy(
     {
-      // options for strategy
       callbackURL: gconfig.callback,
       clientID: gconfig.clientID,
       clientSecret: gconfig.clientSecret
@@ -21,30 +27,33 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value;
 
-      console.log('email', email);
-      console.log('accessToken:', accessToken);
-      console.log('refreshToken:', refreshToken);
-
       // check if user already exists
       const currentUser = await User.findOne({ googleId: profile.id });
 
       if (currentUser) {
-        console.log('User already exists in database');
-        // already have the user -> return (login)
         currentUser.accessToken = accessToken;
-        currentUser.refreshToken = refreshToken;
+        if (refreshToken) {
+          currentUser.refreshToken = refreshToken;
+        }
         currentUser.save();
 
         return done(null, currentUser);
       } else {
-        // register user and return
-        console.log('Registering new user');
-        const newUser = await new User({
+        //create new user
+        const usrObj = {
           email: email,
           googleId: profile.id,
-          accessToken: accessToken,
-          refreshToken: refreshToken
-        }).save();
+          accessToken: accessToken
+        };
+        if (refreshToken) {
+          usrObj.refreshToken = refreshToken;
+        }
+
+        const newUser = await new User(usrObj).save();
+
+        //Creating or updating calendar first time
+        getUserCalendar(newUser).then(calendar => console.log(calendar));
+
         return done(null, newUser);
       }
     }
@@ -72,13 +81,9 @@ export const token = ({ required, roles = User.roles } = {}) => (
   res,
   next
 ) => {
-  console.log('--------------------------');
-  console.log(req.body);
   passport.authenticate('token', { session: false }, (err, user, info) => {
-    console.log('authenticate');
-    console.log(err);
+    console.log('TOKEN AUTH');
     console.log(user);
-    console.log(info);
 
     if (
       err ||
@@ -116,11 +121,16 @@ passport.use(
       ])
     },
     ({ id }, done) => {
-      console.log('TOKEN FROM JWT DECRYPTED');
-      console.log(id);
-      User.findById(id)
+      console.log('TOKEN FROM JWT DECRYPTED', id);
+      User.findOne({ googleId: id })
         .then(user => {
-          console.log(user);
+          console.log('USER FOUND BY ID:', user);
+          console.log('Setting the refresh token to the auth client');
+
+          /*authclient.setCredentials({
+            refresh_token: 'REFRESH_TOKEN_YALL'
+          });*/
+
           done(null, user);
           return null;
         })

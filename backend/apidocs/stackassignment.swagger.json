@@ -1,0 +1,150 @@
+{
+  "info": {
+    "title": "Stack Assignment API",
+    "version": "1.0.0",
+    "description": "API to handle calndar events from a google user account"
+  },
+  "apis": [
+    "api/index.js",
+    "api/user/*",
+    "api/auth/*",
+    "api/items/*"
+  ],
+  "host": "http://stackassignment-backend-local.farandal.com:8888",
+  "basePath": "/",
+  "swagger": "2.0",
+  "paths": {
+    "/items": {
+      "post": {
+        "description": "Returns Calendar Events",
+        "tags": [
+          "Items"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "event JSON object"
+          }
+        }
+      }
+    },
+    "/items/insert": {
+      "post": {
+        "description": "Create a calendar event",
+        "tags": [
+          "Items"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "event JSON object"
+          }
+        }
+      }
+    },
+    "/items/calendar": {
+      "post": {
+        "description": "Get a single calendar event",
+        "tags": [
+          "Items"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "calendar JSON object"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the event to be retrieved",
+            "required": true
+          }
+        ],
+        "schema": {
+          "$ref": "#/definitions/Calendar"
+        }
+      }
+    },
+    "/items/update": {
+      "post": {
+        "description": "Updates the calendar event",
+        "tags": [
+          "Items"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "calendar JSON object"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the event to be updated",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/items/delete": {
+      "post": {
+        "description": "Deletes an event from calendar",
+        "tags": [
+          "Items"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "calendar JSON object"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the event to be deleted",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Calendar": {
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}

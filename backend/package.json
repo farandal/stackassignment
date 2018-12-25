@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node .",
     "production": "node .",
-    "docs": "./node_modules/.bin/jsdoc -r -c jsdoc.config.json -d out"
+    "docs": "./node_modules/.bin/jsdoc -r -c jsdoc.config.json -d out",
+    "apidocs": "./node_modules/.bin/swagger-jsdoc -d ./swagger.config.js -o ./apidocs/stackassignment.swagger.json"
   },
   "author": "Francisco Aranda <farandal@gmail.com>",
   "license": "ISC",
@@ -70,6 +71,7 @@
     "rand-token": "^0.4.0",
     "readline": "^1.3.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "swagger-jsdoc": "^3.2.6"
   }
 }

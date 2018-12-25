@@ -41,6 +41,7 @@ const config = {
       scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']
     },
     webapp: requireProcessEnv('WEBAPP'),
+    host: requireProcessEnv('URL'),
     mongo: {
       uri: requireProcessEnv('MONGODB_URL'),
       options: {

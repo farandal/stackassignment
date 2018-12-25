@@ -1,173 +1,57 @@
 /**
- * Stack Assignment Backend - M800
- * Items Controller
- * This file contains the logic for the Items API Endpoints
- * Author: Francisco Aranda <farandal@gmail.com>
+ * @namespace ItemsController
+ * @summary Items Controller
+ * @author Francisco Aranda <farandal@gmail.com>
  */
 
-/* resources: 
--https://developers.google.com/calendar/quickstart/nodejs
--https://www.diycode.cc/projects/google/google-api-nodejs-client
--https://github.com/wanasit/google-calendar/blob/master/example/list-example.js#L17
- */
-
-//https://github.com/gsuitedevs/node-samples/issues/6
-
-/* 
-TODO: 
--Standarize json response, to be encapsulated in the response service
--Standarize response http codes, as constants in the response service
--Investigate if there is a way to refactor the code in order to do not repeat the authclient initialization,
--But it's necessary to be initialize in every request, as it depends on the user access token
-*/
 import { google } from 'googleapis';
 import { google as gconfig } from '../../config';
-import { success, notFound, error } from '../../services/response/';
+import {
+  success,
+  notFound,
+  error,
+  handleServiceError
+} from '../../services/response/';
 import { sign, verifyToken } from '../../services/jwt';
-import { getUserCalendar } from '../../services/calendar';
-import { getAuthClient } from '../../services/oauth2client';
-import passport from 'passport';
+import {
+  getUserCalendar,
+  getEventList,
+  insertEvent,
+  getEvent,
+  updateEvent,
+  deleteEvent
+} from '../../services/calendar';
 
 export const index = (
   { user, querymen: { query, select, cursor } },
   res,
   next
-) => {
-  const authclient = getAuthClient(user);
+) =>
+  getEventList(user, user.calendarId)
+    .then(events => res.json(events))
+    .catch(error => handleServiceError(res, error));
 
-  const calendar = google.calendar({
-    version: 'v3',
-    auth: authclient
-  });
-  const object = {
-    calendarId: user.calendarId,
-    timeMin: new Date().toISOString(),
-    maxResults: 16,
-    singleEvents: true,
-    orderBy: 'startTime'
-  };
-  //List events
-  calendar.events.list(object, (err, result) => {
-    if (err) {
-      //TODO: use the default response message format to send errors
-      console.log(err);
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service'
-      });
+export const calendar = ({ user }, res, next) =>
+  getUserCalendar(user)
+    .then(calendar => res.json(calendar))
+    .catch(error => handleServiceError(res, error));
 
-      return;
-    }
+export const insert = ({ user, body }, res, next) =>
+  insertEvent(user, user.calendarId, body)
+    .then(event => res.json(event))
+    .catch(error => handleServiceError(res, error));
 
-    const events = result.data.items;
-    res.json(events);
-  });
-};
+export const show = ({ user, params }, res, next) =>
+  getEvent(user, user.calendarId, params.id)
+    .then(event => res.json(event))
+    .catch(error => handleServiceError(res, error));
 
-export const calendar = ({ body, user }, res, next) => {
-  getUserCalendar(user).then(calendar => res.json(calendar));
-};
+export const update = ({ user, params, body }, res, next) =>
+  updateEvent(user, user.calendarId, params.id, body)
+    .then(event => res.json(event))
+    .catch(error => handleServiceError(res, error));
 
-export const insert = ({ body, user }, res, next) => {
-  const authclient = getAuthClient(user);
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
-
-  const object = {
-    auth: authclient,
-    calendarId: user.calendarId,
-    resource: body
-  };
-  console.log('INSERTING EVENT', object);
-  calendar.events.insert(object, function(err, createdEvent) {
-    if (err) {
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service',
-        error: err.message
-      });
-
-      return;
-    }
-
-    res.json(createdEvent.data);
-  });
-};
-
-export const show = ({ body, params, user }, res, next) => {
-  const authclient = getAuthClient(user);
-
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
-
-  const object = {
-    auth: authclient,
-    calendarId: user.calendarId,
-    eventId: params.id
-  };
-  console.log('GETTING EVENT', object);
-
-  calendar.events.get(object, function(err, event) {
-    if (err) {
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service',
-        error: err.message
-      });
-
-      return;
-    }
-
-    res.json(event.data);
-  });
-};
-
-export const update = ({ body, params, user }, res, next) => {
-  const authclient = getAuthClient(user);
-
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
-
-  const object = {
-    auth: authclient,
-    calendarId: user.calendarId || body.calendarId,
-    eventId: params.id,
-    resource: body
-  };
-  console.log('UPDATING EVENT', object);
-  calendar.events.update(object, function(err, updatedEvent) {
-    if (err) {
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service',
-        error: err.message
-      });
-
-      return;
-    }
-
-    res.json(updatedEvent.data);
-  });
-};
-
-export const destroy = ({ body, params, user }, res, next) => {
-  const authclient = getAuthClient(user);
-
-  const calendar = google.calendar({ version: 'v3', auth: authclient });
-
-  const object = {
-    auth: authclient,
-    calendarId: user.calendarId || body.calendarId,
-    eventId: params.id || body.eventId
-  };
-
-  console.log('DELETING EVENT', object);
-
-  calendar.events.delete(object, function(err, response) {
-    if (err) {
-      res.status(409).json({
-        message: 'There was an error contacting the Calendar service',
-        error: err.message
-      });
-
-      return;
-    }
-
-    res.status(200).json({
-      message: 'Resource has been deleted'
-    });
-  });
-};
+export const destroy = ({ user, params }, res, next) =>
+  deleteEvent(user, user.calendarId, params.id)
+    .then(response => res.json(response))
+    .catch(error => handleServiceError(res, error));

@@ -1,3 +1,9 @@
+/**
+ * @namespace UserController
+ * @summary User Controller
+ * @author Francisco Aranda <farandal@gmail.com>
+ */
+
 import { success, notFound } from '../../services/response/';
 import { User } from '.';
 
@@ -15,7 +21,6 @@ export const show = ({ params }, res, next) =>
     .catch(next);
 
 export const showMe = ({ user }, res) => {
-  console.log(user);
   res.json(user.view(true));
 };
 

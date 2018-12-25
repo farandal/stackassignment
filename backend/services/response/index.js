@@ -21,6 +21,15 @@ export const error = res => entity => {
   return null;
 };
 
+export const handleServiceError = (res, object) => {
+  const status =
+    object.error && object.error.code ? object.error.code : object.code;
+  res
+    .status(status)
+    .json({ message: object.message, google_error: object.error.errors });
+  return null;
+};
+
 export const authorOrAdmin = (res, user, userField) => entity => {
   if (entity) {
     const isAdmin = user.role === 'admin';

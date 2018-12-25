@@ -28,9 +28,9 @@ Code quality, based on current best practices using node.js / javascript
 Code clarity & documentation
 Test / testability, if applicable
 
-##Production URL
+## Production URL
 http://stackassignment-frontend.farandal.com/
 
-##Documentation
-https://documenter.getpostman.com/view/17049/Rzn8QMXp#45930ff4-ba04-430e-8be2-52bb57774797
-http://stackassignment-backend.farandal.com/docs
+## Documentation
+* API DOCS (https://documenter.getpostman.com/view/17049/Rzn8QMXp#45930ff4-ba04-430e-8be2-52bb57774797) 
+* JSDOCS (http://stackassignment-backend.farandal.com/docs)

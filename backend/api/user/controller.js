@@ -21,7 +21,6 @@ export const show = ({ params }, res, next) =>
     .catch(next);
 
 export const showMe = ({ user }, res) => {
-  console.log(user);
   res.json(user.view(true));
 };
 

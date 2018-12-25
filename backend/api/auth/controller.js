@@ -9,11 +9,6 @@ import { success } from '../../services/response/';
 import passport from 'passport';
 import { webapp, google as gconfig } from '../../config';
 import { google } from 'googleapis';
-import request from 'request';
-import fs from 'fs';
-import readline from 'readline';
-
-const TOKEN_PATH = '../../credentials.json';
 
 export const redirect = (res, url) => {
   res.redirect(url);
@@ -33,29 +28,23 @@ export const googleRequestAuth = () => (req, res, next) => {
     session: false,
     accessType: 'offline',
     approvalPrompt: 'force',
+    failureRedirect: `${webapp}?error=failed_authentication`,
     scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']
   })(req, res, next);
 };
 
 export const googleAuth = () => (req, res, next) => {
-  console.log(req);
-  console.log(res);
   passport.authenticate('google', {
     session: false,
-    failureRedirect: '/login'
+    failureRedirect: `${webapp}?error=failed_authentication`
   })(req, res, next);
 };
 export const googleCallback = (req, res, next) => {
   const user = req.user;
   const authCode = req.query.code;
   const userId = user.id;
-  console.log(user);
-
   sign(user.googleId)
     .then(token => {
-      console.log('-----------');
-      console.log('USER TOKEN', token);
-      console.log('-----------');
       redirect(res, `${webapp}?token=${token}`);
     })
     .catch(next);

@@ -29,7 +29,7 @@ export const googleRequestAuth = () => (req, res, next) => {
     accessType: 'offline',
     approvalPrompt: 'force',
     failureRedirect: `${webapp}?error=failed_authentication`,
-    scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']
+    scope: gconfig.scopes
   })(req, res, next);
 };
 

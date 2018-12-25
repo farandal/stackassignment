@@ -37,7 +37,8 @@ const config = {
     google: {
       clientID: requireProcessEnv('GOOGLE_OAUTH_CLIENT_ID'),
       clientSecret: requireProcessEnv('GOOGLE_OAUTH_CLIENT_SECRET'),
-      callback: requireProcessEnv('GOOGLE_OAUTH_REDIRECT_URL')
+      callback: requireProcessEnv('GOOGLE_OAUTH_REDIRECT_URL'),
+      scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']
     },
     webapp: requireProcessEnv('WEBAPP'),
     mongo: {

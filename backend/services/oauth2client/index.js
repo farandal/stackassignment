@@ -7,6 +7,7 @@ const authclient = new google.auth.OAuth2(
   gconfig.callback
 );
 
+//https://github.com/googleapis/google-api-nodejs-client/pull/1160/files
 authclient.on('tokens', tokens => {
   if (tokens.refresh_token) {
     console.log('store the refresh_token in my database', tokens.refresh_token);

@@ -1,3 +1,9 @@
+/**
+ * @namespace UserController
+ * @summary User Controller
+ * @author Francisco Aranda <farandal@gmail.com>
+ */
+
 import { success, notFound } from '../../services/response/';
 import { User } from '.';
 

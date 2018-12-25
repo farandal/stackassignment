@@ -1,3 +1,9 @@
+/**
+ * @namespace AuthController
+ * @summary Authentication controller
+ * @author Francisco Aranda <farandal@gmail.com>
+ */
+
 import { sign, verifyToken } from '../../services/jwt';
 import { success } from '../../services/response/';
 import passport from 'passport';
@@ -39,12 +45,12 @@ export const googleAuth = () => (req, res, next) => {
     failureRedirect: '/login'
   })(req, res, next);
 };
-
 export const googleCallback = (req, res, next) => {
   const user = req.user;
   const authCode = req.query.code;
   const userId = user.id;
   console.log(user);
+
   sign(user.googleId)
     .then(token => {
       console.log('-----------');

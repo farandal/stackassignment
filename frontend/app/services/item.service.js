@@ -27,10 +27,10 @@ function createItem(item) {
     location: item.location,
     description: item.description,
     start: {
-      dateTime: item.start.toString() + '-07:00'
+      dateTime: item.start.toString() + ':00-07:00'
     },
     end: {
-      dateTime: item.end.toString() + '-07:00'
+      dateTime: item.end.toString() + ':00-07:00'
     }
   };
 
@@ -54,10 +54,10 @@ function updateItem(item) {
     location: item.location,
     description: item.description,
     start: {
-      dateTime: item.start.toString() + '-07:00'
+      dateTime: item.start.toString() + ':00-07:00'
     },
     end: {
-      dateTime: item.end.toString() + '-07:00'
+      dateTime: item.end.toString() + ':00-07:00'
     }
   };
 

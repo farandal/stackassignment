@@ -31,10 +31,10 @@ class ItemForm extends React.Component {
       description: '',
       start: moment()
         .add(2, 'hour')
-        .format('YYYY-MM-DDTHH:mm:ss'),
+        .format('YYYY-MM-DDTHH:mm'),
       end: moment()
         .add(4, 'hour')
-        .format('YYYY-MM-DDTHH:mm:ss')
+        .format('YYYY-MM-DDTHH:mm')
     };
 
     console.log(props);

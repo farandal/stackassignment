@@ -13,6 +13,9 @@ import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import style from './navigation-bar.scss';
+import { connect } from 'react-redux';
+import { userActions } from '../../actions';
+import { history } from '../../helpers';
 
 const styles = {
   root: {
@@ -27,7 +30,7 @@ class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      auth: false,
+      user: { loggedIn: false },
       anchorEl: null
     };
   }
@@ -40,13 +43,26 @@ class NavigationBar extends React.Component {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = () => {
-    this.setState({ anchorEl: null });
+  logout = () => {
+    const { dispatch } = this.props;
+    this.setState({
+      user: { loggedIn: false },
+      anchorEl: null
+    });
+    dispatch(userActions.logout());
+    history.push('/');
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.user && props.user.loggedIn) {
+      state.user = props.user;
+    }
+    return state;
+  }
 
   render() {
     const { classes } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { user, anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
@@ -57,7 +73,7 @@ class NavigationBar extends React.Component {
               Calendar App
             </Typography>
 
-            {auth && (
+            {user.loggedIn && (
               <div>
                 <IconButton
                   aria-owns={open ? 'menu-appbar' : undefined}
@@ -81,8 +97,7 @@ class NavigationBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.logout}>Logout</MenuItem>
                 </Menu>
               </div>
             )}
@@ -97,4 +112,11 @@ NavigationBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(NavigationBar);
+const mapStateToProps = state => {
+  return {
+    user: state.userReducer
+  };
+};
+
+const styledComponent = withStyles(styles)(NavigationBar);
+export default connect(mapStateToProps)(styledComponent);

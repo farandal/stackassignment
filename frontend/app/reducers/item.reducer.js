@@ -12,7 +12,6 @@ const itemReducer = (state = [], action) => {
         return [action.item, ...state];
       }
     default:
-      console.log(action);
       return state;
   }
 };

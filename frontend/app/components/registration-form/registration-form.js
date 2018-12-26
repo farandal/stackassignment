@@ -12,11 +12,13 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { userActions } from '../../actions';
 import { API_URL } from '../../app.config';
+import { Link } from 'react-router-dom';
+import queryString from 'query-string';
+import { history } from '../../helpers';
 
 const styles = theme => ({
   container: {
@@ -47,56 +49,39 @@ const styles = theme => ({
   }
 });
 
-const initialState = {
-  loggedIn: false,
-  accessToken: null,
-  googleId: null,
-  email: null,
-  profileObj: {}
-};
-
 class RegistrationForm extends React.Component {
   constructor(props) {
     super(props);
-    //this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = initialState;
+    this.loginBtnClick = this.loginBtnClick.bind(this);
+    this.state = { loggedIn: false, user: {} };
   }
 
-  responseGoogle = response => {
-    if (response && response.accessToken && response.accessToken != '') {
-      this.setState({
-        loggedIn: true,
-        accessToken: response.accessToken,
-        tokenId: response.tokenId,
-        googleId: response.googleId,
-        email: response.profileObj.email,
-        profileObj: response.profileObj
-      });
-
-      const user = {
-        access_token: response.accessToken,
-        token_id: response.tokenId,
-        google_id: response.googleId,
-        email: response.profileObj.email
-      };
-
-      //this.props.history.push('/dashboard');
-
-      const { dispatch } = this.props;
-      dispatch(userActions.register(user));
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    var query = queryString.parse(location.search);
+    if (query.token) {
+      window.localStorage.setItem('jwt', query.token);
+      dispatch(userActions.getUser());
+      return;
+    }
+    if (window.localStorage.getItem('jwt')) {
+      dispatch(userActions.getUser());
+      return;
     }
   };
 
-  logout = some => {
-    this.setState(initialState);
-    const data = this.state;
-    this.props.dispatch({
-      type: 'USER_LOGOUT',
-      data
-    });
+  static getDerivedStateFromProps(props, state) {
+    if (props.user.loggedIn) {
+      history.push('/dashboard');
+    }
+    return state;
+  }
+
+  loginBtnClick = e => {
+    window.location.href = `${API_URL}/auth/google`;
   };
 
-  render() {
+  render = () => {
     const { classes } = this.props;
 
     return (
@@ -112,12 +97,21 @@ class RegistrationForm extends React.Component {
             </Typography>
           </CardContent>
           <CardActions>
-            <a href={`${API_URL}/auth/google`}>LOGIN WITH GOOGLE</a>
+            <div className='well' style={classes.well}>
+              <Button
+                color={'primary'}
+                size={'large'}
+                onClick={this.loginBtnClick}
+                className={classes.button}
+              >
+                LOGIN WITH GOOGLE
+              </Button>
+            </div>
           </CardActions>
         </Card>
       </form>
     );
-  }
+  };
 }
 
 RegistrationForm.propTypes = {
@@ -126,7 +120,7 @@ RegistrationForm.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    app: state.appReducer
+    user: state.userReducer
   };
 };
 

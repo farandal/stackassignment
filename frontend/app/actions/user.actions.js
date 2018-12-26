@@ -1,36 +1,35 @@
-import { userConstants } from '../constants';
 import { userService } from '../services';
 import { history } from '../helpers';
-import { logActions } from './';
 
 export const userActions = {
-  register
+  getUser,
+  logout
 };
 
-function register(user) {
+function logout() {
+  userService.logout();
+  return { type: 'LOGOUT_SUCCESS' };
+}
+
+function getUser(user) {
   return dispatch => {
-    dispatch(request(user));
-    userService.register(user).then(
+    dispatch(request());
+    userService.getUser().then(
       user => {
-        dispatch(success());
-        history.push('/dashboard');
-        console.log('registration success');
-        dispatch(logActions.success('Registration successful'));
+        dispatch(success(user));
       },
       error => {
-        dispatch(failure(error.toString()));
-        dispatch(logActions.error(error.toString()));
+        dispatch(failure(error));
       }
     );
   };
-
   function request(user) {
-    return { type: userConstants.REGISTER_REQUEST, user };
+    return { type: 'GET_USER_REQUEST', user };
   }
   function success(user) {
-    return { type: userConstants.REGISTER_SUCCESS, user };
+    return { type: 'GET_USER_SUCCESS', user };
   }
   function failure(error) {
-    return { type: userConstants.REGISTER_FAILURE, error };
+    return { type: 'GET_USER_FAILURE', error };
   }
 }

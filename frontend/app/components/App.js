@@ -11,7 +11,6 @@ import Home from './home/home';
 import NavigationBar from './navigation-bar/navigation-bar';
 import Dashboard from './dashboard/dashboard';
 import style from './App.scss';
-import queryString from 'query-string';
 import { history } from '../helpers';
 
 const theme = createMuiTheme({
@@ -32,19 +31,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-  }
-
-  componentWillMount() {
-    console.log(window.localStorage.getItem('jwt'));
-    if (window.localStorage.getItem('jwt')) {
-      history.push('/dashboard');
-      return;
-    }
-    var query = queryString.parse(location.search);
-    if (query.token) {
-      window.localStorage.setItem('jwt', query.token);
-      history.push('/dashboard');
-    }
   }
 
   render() {

@@ -1,5 +1,8 @@
 import { appendAuthToken } from '../helpers';
 import { API_URL } from '../app.config';
+import moment from 'moment';
+import timezone from 'moment-timezone';
+
 export const itemService = {
   getItem,
   updateItem,
@@ -27,10 +30,10 @@ function createItem(item) {
     location: item.location,
     description: item.description,
     start: {
-      dateTime: item.start.toString() + '-07:00'
+      dateTime: moment(item.start).format('YYYY-MM-DDTHH:mm:ssZ')
     },
     end: {
-      dateTime: item.end.toString() + '-07:00'
+      dateTime: moment(item.end).format('YYYY-MM-DDTHH:mm:ssZ')
     }
   };
 
@@ -54,10 +57,10 @@ function updateItem(item) {
     location: item.location,
     description: item.description,
     start: {
-      dateTime: item.start.toString() + '-07:00'
+      dateTime: moment(item.start).format('YYYY-MM-DDTHH:mm:ssZ')
     },
     end: {
-      dateTime: item.end.toString() + '-07:00'
+      dateTime: moment(item.end).format('YYYY-MM-DDTHH:mm:ssZ')
     }
   };
 

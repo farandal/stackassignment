@@ -73,7 +73,7 @@ class EditForm extends React.Component {
         resource: {
           id: nextProps.logs.data.id,
           summary: nextProps.logs.data.summary,
-          location: nextProps.logs.data.summary,
+          location: nextProps.logs.data.location,
           description: nextProps.logs.data.description,
           start: moment(nextProps.logs.data.start.dateTime).format(
             'YYYY-MM-DDTHH:mm:00'

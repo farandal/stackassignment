@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "341947537567",
+    "firebase_url": "https://stackassignment.firebaseio.com",
+    "project_id": "stackassignment",
+    "storage_bucket": "stackassignment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341947537567:android:5a0efef46e2f3896",
+        "android_client_info": {
+          "package_name": "com.farandal.stackassignment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341947537567-s92njnjoagh7r6aelfnmchf99vqoghbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.farandal.stackassignment",
+            "certificate_hash": "50d64c3974e6a874ede9f14f4efebd8b919cfff5"
+          }
+        },
+        {
+          "client_id": "341947537567-nd1m19i8tukkgv88i208fpum3fbgc63o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR8HIzQHsALhnJQAhu_IxYiBNwUItnxho"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341947537567-nd1m19i8tukkgv88i208fpum3fbgc63o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

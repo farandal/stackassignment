@@ -1,5 +1,5 @@
-#init an empty react-natve mobile
-react-native init mobile
+#init an empty react-natve stackassignment
+react-native init stackassignment
 #signing the package
 cd android/app
 mkdir keystore

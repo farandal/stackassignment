@@ -8,6 +8,7 @@ import { Strategy as CustomBearerStrategy } from 'passport-http-custom-bearer';
 import { jwtSecret, masterKey, google as gconfig } from '../../config';
 import User, { schema } from '../../api/user/model';
 import { getUserCalendar } from '../../services/calendar';
+import { findOrCreate } from '../../services/user';
 
 /*
 Resources:
@@ -26,36 +27,9 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value;
-
-      // check if user already exists
-      const currentUser = await User.findOne({ googleId: profile.id });
-
-      if (currentUser) {
-        currentUser.accessToken = accessToken;
-        if (refreshToken) {
-          currentUser.refreshToken = refreshToken;
-        }
-        currentUser.save();
-
-        return done(null, currentUser);
-      } else {
-        //create new user
-        const usrObj = {
-          email: email,
-          googleId: profile.id,
-          accessToken: accessToken
-        };
-        if (refreshToken) {
-          usrObj.refreshToken = refreshToken;
-        }
-
-        const newUser = await new User(usrObj).save();
-
-        //Creating or updating calendar first time
-        getUserCalendar(newUser).then(calendar => console.log(calendar));
-
-        return done(null, newUser);
-      }
+      findOrCreate(profile.id, email, accessToken, refreshToken)
+        .then(user => done(null, user))
+        .catch(done);
     }
   )
 );

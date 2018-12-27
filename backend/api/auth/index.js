@@ -14,6 +14,6 @@ const router = new Router();
 router.post('/', master(), login);
 router.get('/google', googleRequestAuth());
 router.get('/google-success', googleAuth(), googleCallback);
-router.get('/mobile-callback', jsonParser, mobileCallback);
+router.post('/mobile-callback', jsonParser, mobileCallback);
 
 export default router;

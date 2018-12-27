@@ -1,0 +1,17 @@
+#init an empty react-natve mobile
+react-native init mobile
+#signing the package
+cd android/app
+mkdir keystore
+keytool -genkey -v -keystore stackassignment-mobile-key.keystore -alias stackassignment -keyalg RSA -keysize 2048 -validity 10000
+#added config in android/gradle.properties
+MYAPP_RELEASE_STORE_FILE=keystore/stackassignment-mobile-key.keystore
+MYAPP_RELEASE_KEY_ALIAS=stackassignment
+MYAPP_RELEASE_STORE_PASSWORD=stackassignment
+MYAPP_RELEASE_KEY_PASSWORD=stackassignment
+#get the certificate signature
+cd android/app
+keytool -list -alias stackassignment -keystore ./keystores/stackassignment-mobile-key.keystore
+keytool -v -list -alias stackassignment -keystore ./keystores/stackassignment-mobile-key.keystore -storepass stackassignment -keypass stackassignment
+#signature
+50:D6:4C:39:74:E6:A8:74:ED:E9:F1:4F:4E:FE:BD:8B:91:9C:FF:F5

@@ -16,34 +16,51 @@ import User, { schema } from '../../api/user/model';
  */
 export const findOrCreate = (googleId, email, accessToken, refreshToken) => {
   return new Promise(function(resolve, reject) {
+    if (!email || !googleId || !accessToken) {
+      console.log('Parameters missing, either, googleId, email, accessToken ');
+      reject({
+        code: 409,
+        message: 'Parameters missing, either, googleId, email, accessToken '
+      });
+    }
+
     try {
       // check if user already exists
-      User.findOne({ googleId: googleId }).then(currentUser => {
-        console.log(currentUser);
-        if (currentUser) {
-          currentUser.accessToken = accessToken;
-          if (refreshToken) {
-            currentUser.refreshToken = refreshToken;
-          }
-          currentUser.save();
-          resolve(currentUser);
-        } else {
-          //create new user
-          const usrObj = {
-            email: email,
-            googleId: profile.id,
-            accessToken: accessToken
-          };
-          if (refreshToken) {
-            usrObj.refreshToken = refreshToken;
-          }
+      User.findOne({ googleId: googleId })
+        .then(currentUser => {
+          console.log(currentUser);
+          if (currentUser) {
+            currentUser.accessToken = accessToken;
+            if (refreshToken) {
+              currentUser.refreshToken = refreshToken;
+            }
+            currentUser.save();
+            resolve(currentUser);
+          } else {
+            //create new user
+            const usrObj = {
+              email: email,
+              googleId: googleId,
+              accessToken: accessToken
+            };
+            if (refreshToken) {
+              usrObj.refreshToken = refreshToken;
+            }
 
-          new User(usrObj).save().then(newUser => {
-            getUserCalendar(newUser).then(calendar => console.log(calendar));
-            resolve(newUser);
+            new User(usrObj).save().then(newUser => {
+              getUserCalendar(newUser).then(calendar => console.log(calendar));
+              resolve(newUser);
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          reject({
+            code: 409,
+            message: 'There was an error creating or updating the user',
+            error: error
           });
-        }
-      });
+        });
     } catch (error) {
       console.log(error);
       reject({

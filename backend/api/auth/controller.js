@@ -53,9 +53,8 @@ export const googleCallback = (req, res, next) => {
 };
 
 export const mobileCallback = ({ body }, res, next) => {
-  console.log(body);
   const {
-    userID,
+    UserID,
     email,
     name,
     givenName,
@@ -66,7 +65,7 @@ export const mobileCallback = ({ body }, res, next) => {
     serverAuthCode
   } = body;
 
-  findOrCreate(userID, email, accessToken, refreshToken)
+  findOrCreate(UserID, email, accessToken, refreshToken)
     .then(user => {
       sign(user.googleId)
         .then(token => {

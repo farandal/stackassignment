@@ -28,7 +28,7 @@ Code quality, based on current best practices using node.js / javascript
 Code clarity & documentation
 Test / testability, if applicable
 
-##Screenshot
+## Screenshot
 ![alt text](https://raw.githubusercontent.com/farandal/stackassignment/master/screenshot.png)
 
 ## Production URL

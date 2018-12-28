@@ -40,7 +40,6 @@ export const googleAuth = () => (req, res, next) => {
     failureRedirect: `${webapp}?error=failed_authentication`
   })(req, res, next);
 };
-
 export const googleCallback = (req, res, next) => {
   const user = req.user;
   const authCode = req.query.code;

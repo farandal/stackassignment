@@ -27,3 +27,14 @@ The deliverable should contain the sources including the build / project files
 Code quality, based on current best practices using node.js / javascript
 Code clarity & documentation
 Test / testability, if applicable
+
+## Screenshot
+![alt text](https://raw.githubusercontent.com/farandal/stackassignment/master/screenshot.png)
+
+## Production URL
+http://stackassignment-frontend.farandal.com/
+
+## Documentation
+* API DOCS: https://documenter.getpostman.com/view/17049/Rzn8QMXp#45930ff4-ba04-430e-8be2-52bb57774797 
+* API DOCS bult by swagger-jsdocs: http://stackassignment-backend.farandal.com/apidocs 
+* JsDocs http://stackassignment-backend.farandal.com/docs/CalendarService.html

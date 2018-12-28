@@ -7,10 +7,7 @@ import { Platform, StyleSheet, Text, View } from 'react-native';
 import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
 import config from '../../../app.config.js';
-
-import GoogleSignIn from 'react-native-google-sign-in';
 import { userService } from '../../services';
-
 import { AsyncStorage } from 'react-native';
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -18,14 +15,14 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 type Props = {};
 
-class Home extends Component<Props> {
+class Main extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   static navigationOptions = {
-    title: 'Login',
+    title: 'Next Meetings...',
     headerStyle: {
       backgroundColor: config.colors.primary
     },
@@ -35,53 +32,31 @@ class Home extends Component<Props> {
     }
   };
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.userStore.token) {
-      AsyncStorage.setItem('token', props.userStore.token);
-    }
-    AsyncStorage.getItem('token')
-      .then(token => token && this.props.navigation.navigate('Main'))
-      .done();
-    return state;
-  }
-
-  googleOauth = async e => {
-    GoogleSignIn.configure(config.google);
-    const user = await GoogleSignIn.signInPromise();
-    this.props.login(user);
-  };
-
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
     return (
       <Page>
-        {!!loggedIn ? (
+        {!!loggedIn && (
           <Form>
             <Form.Label>User</Form.Label>
             <Form.Value>{JSON.stringify(user)}</Form.Value>
             <Form.Label>Token</Form.Label>
             <Form.Value>{token}</Form.Value>
           </Form>
-        ) : (
-          <Heading>
-            {'Welcome!, please login with your google account.'}
-          </Heading>
         )}
         <ButtonContainer>
-          {!loggedIn && (
-            <Button
-              onPress={this.googleOauth}
-              text='LOGIN WITH GOOGLE'
-              color={config.colors.secondaryDark}
-              accessibilityLabel='Login with google Oauth2'
-            />
-          )}
+          <Button
+            onPress={() => this.props.navigation.push('Home')}
+            text='Home'
+            color={config.colors.secondaryDark}
+          />
         </ButtonContainer>
       </Page>
     );
   };
 }
 
+/*
 const login = userActions.login;
 
 const mapDispatchToProps = dispatch =>
@@ -91,6 +66,7 @@ const mapDispatchToProps = dispatch =>
     },
     dispatch
   );
+*/
 
 const mapStateToProps = state => {
   return {
@@ -98,7 +74,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);
+export default connect(mapStateToProps)(Main);

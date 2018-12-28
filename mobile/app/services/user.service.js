@@ -1,7 +1,7 @@
-import { API_URL } from '../../app.config';
+import config from '../../app.config';
 
 const login = user => {
-  return fetch(`${API_URL}/auth/mobile-callback`, {
+  return fetch(`${config.apiUrl}/auth/mobile-callback`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

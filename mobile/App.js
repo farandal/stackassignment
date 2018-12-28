@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import thunk from 'redux-thunk';
 import SplashScreen from 'react-native-splash-screen';
 import userReducer from './app/reducers/user.reducer';
-import Home from './app/components/Home';
+import HomeScreen from './app/components/Home';
+import MainScreen from './app/components/Main';
+import config from './app.config.js';
 
 const rootReducer = combineReducers({
   userReducer
 });
-
 const store = createStore(rootReducer, applyMiddleware(thunk));
+
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: HomeScreen
+  },
+  Main: {
+    screen: MainScreen
+  }
+});
+
+const AppContainer = createAppContainer(AppNavigator);
 
 type State = {
   session: {
@@ -33,7 +46,7 @@ export default class App extends Component<Props> {
   render() {
     return (
       <Provider store={store}>
-        <Home />
+        <AppContainer />
       </Provider>
     );
   }

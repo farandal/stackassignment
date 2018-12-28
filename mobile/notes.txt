@@ -9,6 +9,7 @@ react-native run-android --variant=release
 adb shell input keyevent 82 #to open the dev menu (82 being the Menu key code).
 Enable remote JS debugger, and open the url:
 http://localhost:8081/debugger-ui/
+lt --port 8888
 
 -----
 SETUP
@@ -50,3 +51,4 @@ https://medium.com/@filipvitas/setup-react-native-app-from-scratch-7f42cbeb4b01
 https://alligator.io/react/react-native-redux/
 https://blog.benestudio.co/5-ways-to-connect-redux-actions-3f56af4009c8
 https://localtunnel.github.io/www/
+https://github.com/wkh237/react-native-fetch-blob#multipartform-data-example-post-form-data-with-file-and-data

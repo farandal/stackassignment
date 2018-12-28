@@ -25,9 +25,10 @@ export const findOrCreate = (googleId, email, accessToken, refreshToken) => {
     }
 
     try {
+      console.log('googleId', googleId);
       // check if user already exists
       const currentUser = await User.findOne({ googleId: googleId });
-
+      console.log('CurrentUser by googleId', googleId);
       console.log(currentUser);
 
       if (currentUser) {

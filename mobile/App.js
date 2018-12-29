@@ -5,12 +5,14 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import thunk from 'redux-thunk';
 import SplashScreen from 'react-native-splash-screen';
 import userReducer from './app/reducers/user.reducer';
+import itemsReducer from './app/reducers/items.reducer';
 import HomeScreen from './app/components/Home';
 import MainScreen from './app/components/Main';
 import config from './app.config.js';
 
 const rootReducer = combineReducers({
-  userReducer
+  userReducer,
+  itemsReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 

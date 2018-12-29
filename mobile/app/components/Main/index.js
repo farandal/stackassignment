@@ -2,13 +2,15 @@ import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { userActions } from '../../actions';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
-import config from '../../../app.config.js';
-import { userService } from '../../services';
+import { Card } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Feather';
+import { userActions, itemsActions } from '../../actions';
+import { userService, itemsService } from '../../services';
 import { AsyncStorage } from 'react-native';
+import config from '../../../app.config.js';
 
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -32,6 +34,11 @@ class Main extends Component<Props> {
     }
   };
 
+  componentDidMount() {
+    console.log('GET ITEMS');
+    this.props.getItems();
+  }
+
   static getDerivedStateFromProps(props, state) {
     console.log(props);
     return state;
@@ -39,16 +46,20 @@ class Main extends Component<Props> {
 
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
+    const { itemsStore } = this.props;
     return (
       <Page>
-        {!!loggedIn && (
-          <Form>
-            <Form.Label>User</Form.Label>
-            <Form.Value>{JSON.stringify(user)}</Form.Value>
-            <Form.Label>Token</Form.Label>
-            <Form.Value>{token}</Form.Value>
-          </Form>
-        )}
+        <ScrollView>
+          {itemsStore &&
+            itemsStore.map((item, i) => (
+              <Card key={i}>
+                <Icon name='calendar' size={30} color={config.colors.primary} />
+                <Text style={styles.titleText}>{item.summary}</Text>
+                <Text style={styles.bodyText}>{item.description}</Text>
+              </Card>
+            ))}
+        </ScrollView>
+
         <ButtonContainer>
           <Button
             onPress={() =>
@@ -65,22 +76,32 @@ class Main extends Component<Props> {
   };
 }
 
-/*
-const login = userActions.login;
+const styles = StyleSheet.create({
+  baseText: {},
+  titleText: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  }
+});
+
+const getItems = itemsActions.getItems;
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      login
+      getItems
     },
     dispatch
   );
-*/
 
 const mapStateToProps = state => {
   return {
-    userStore: state.userReducer
+    userStore: state.userReducer,
+    itemsStore: state.itemsReducer
   };
 };
 
-export default connect(mapStateToProps)(Main);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Main);

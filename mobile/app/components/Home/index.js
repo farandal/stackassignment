@@ -75,12 +75,7 @@ class Home extends Component<Props> {
     return (
       <Page>
         {!!loggedIn ? (
-          <Form>
-            <Form.Label>User</Form.Label>
-            <Form.Value>{JSON.stringify(user)}</Form.Value>
-            <Form.Label>Token</Form.Label>
-            <Form.Value>{token}</Form.Value>
-          </Form>
+          <Text />
         ) : (
           <Heading>
             {'Welcome!, please login with your google account.'}

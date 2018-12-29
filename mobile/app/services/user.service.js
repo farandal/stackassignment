@@ -1,14 +1,6 @@
 import config from '../../app.config';
 import { AsyncStorage } from 'react-native';
-
-const removeItemValue = async key => {
-  try {
-    await AsyncStorage.removeItem(key);
-    return true;
-  } catch (exception) {
-    return false;
-  }
-};
+import { removeItemValue, addItemValue } from '../helpers';
 
 const login = user => {
   return fetch(`${config.apiUrl}/auth/mobile-callback`, {

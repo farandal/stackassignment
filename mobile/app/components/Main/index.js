@@ -9,6 +9,8 @@ import { Card } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import { userActions, itemsActions } from '../../actions';
 import { userService, itemsService } from '../../services';
+import moment from 'moment';
+import timezone from 'moment-timezone';
 import { AsyncStorage } from 'react-native';
 import config from '../../../app.config.js';
 
@@ -53,9 +55,22 @@ class Main extends Component<Props> {
           {itemsStore &&
             itemsStore.map((item, i) => (
               <Card key={i}>
-                <Icon name='calendar' size={30} color={config.colors.primary} />
-                <Text style={styles.titleText}>{item.summary}</Text>
-                <Text style={styles.bodyText}>{item.description}</Text>
+                <View style={styles.card}>
+                  <View style={styles.iconView}>
+                    <Icon
+                      name='calendar'
+                      size={30}
+                      color={config.colors.primary}
+                    />
+                  </View>
+                  <View style={styles.contentView}>
+                    <Text style={styles.titleText}>{item.summary}</Text>
+                    <Text style={styles.bodyText}>{item.description}</Text>
+                    <Text style={styles.bodyText}>
+                      {moment(`${item.start.dateTime}`).calendar()}
+                    </Text>
+                  </View>
+                </View>
               </Card>
             ))}
         </ScrollView>
@@ -81,7 +96,15 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 14,
     fontWeight: 'bold'
-  }
+  },
+  card: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  iconView: {
+    width: 40
+  },
+  contentView: { flexGrow: 1 }
 });
 
 const getItems = itemsActions.getItems;

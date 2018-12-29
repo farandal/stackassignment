@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { userActions } from '../../actions';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, Text } from 'react-native';
 import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
 import { createStackNavigator, createAppContainer } from 'react-navigation';

@@ -2,7 +2,7 @@
 //apiUrl = 'https://sour-bobcat-55.localtunnel.me';
 
 const config = {
-  env: 'prod',
+  env: 'dev',
   apiUrl: 'http://stackassignment-backend.farandal.com',
   google: {
     clientID:

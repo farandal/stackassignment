@@ -1,4 +1,14 @@
 import config from '../../app.config';
+import { AsyncStorage } from 'react-native';
+
+const removeItemValue = async key => {
+  try {
+    await AsyncStorage.removeItem(key);
+    return true;
+  } catch (exception) {
+    return false;
+  }
+};
 
 const login = user => {
   return fetch(`${config.apiUrl}/auth/mobile-callback`, {
@@ -8,10 +18,19 @@ const login = user => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(user)
-  }).then(handleResponse);
+  })
+    .then(handleResponse)
+    .then(data => {
+      console.log('setting token from login response', data.token);
+      AsyncStorage.setItem('token', data.token);
+      return data;
+    });
 };
 
-const logout = () => {};
+const logout = async () => {
+  console.log('Celared token from AsyncStorage');
+  return removeItemValue('token');
+};
 
 const handleResponse = response => {
   const text = response._bodyText;

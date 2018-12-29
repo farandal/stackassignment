@@ -1,7 +1,8 @@
 import { userService } from '../services';
 
 export const userActions = {
-  login
+  login,
+  logout
 };
 
 function login(user) {
@@ -26,5 +27,15 @@ function login(user) {
         console.log('error', error);
         dispatch(failure(error));
       });
+  };
+}
+
+function logout() {
+  function success() {
+    return { type: 'LOGOUT_SUCCESS' };
+  }
+  return dispatch => {
+    userService.logout();
+    dispatch(success());
   };
 }

@@ -32,6 +32,11 @@ class Main extends Component<Props> {
     }
   };
 
+  static getDerivedStateFromProps(props, state) {
+    console.log(props);
+    return state;
+  }
+
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
     return (
@@ -46,7 +51,11 @@ class Main extends Component<Props> {
         )}
         <ButtonContainer>
           <Button
-            onPress={() => this.props.navigation.push('Home')}
+            onPress={() =>
+              this.props.navigation.push('Home', {
+                redirect: false
+              })
+            }
             text='Home'
             color={config.colors.secondaryDark}
           />

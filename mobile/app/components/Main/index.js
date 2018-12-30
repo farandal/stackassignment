@@ -2,10 +2,17 @@ import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Platform, StyleSheet, Text, View, ScrollView } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity
+} from 'react-native';
 import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
-import { Card } from 'react-native-elements';
+import { Card, Button as ElementsButton } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import { userActions, itemsActions } from '../../actions';
 import { userService, itemsService } from '../../services';
@@ -70,6 +77,21 @@ class Main extends Component<Props> {
                       {moment(`${item.start.dateTime}`).calendar()}
                     </Text>
                   </View>
+                  <View style={styles.buttonsView}>
+                    <TouchableOpacity style={styles.button}>
+                      <Icon name={'edit'} size={20} color='#ffffff' />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        this.props.navigation.navigate('Detail', {
+                          itemId: item.id
+                        });
+                      }}
+                    >
+                      <Icon name={'eye'} size={20} color='#ffffff' />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </Card>
             ))}
@@ -104,7 +126,25 @@ const styles = StyleSheet.create({
   iconView: {
     width: 40
   },
-  contentView: { flexGrow: 1 }
+  contentView: { flexGrow: 1 },
+  buttonsView: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    padding: 5,
+    borderRadius: 0,
+    justifyContent: 'flex-end'
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    backgroundColor: config.colors.secondary,
+    borderRadius: 40,
+    margin: 5
+  }
 });
 
 const getItems = itemsActions.getItems;

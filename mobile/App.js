@@ -6,13 +6,16 @@ import thunk from 'redux-thunk';
 import SplashScreen from 'react-native-splash-screen';
 import userReducer from './app/reducers/user.reducer';
 import itemsReducer from './app/reducers/items.reducer';
+import itemReducer from './app/reducers/item.reducer';
 import HomeScreen from './app/components/Home';
 import MainScreen from './app/components/Main';
+import DetailScreen from './app/components/Detail';
 import config from './app.config.js';
 
 const rootReducer = combineReducers({
   userReducer,
-  itemsReducer
+  itemsReducer,
+  itemReducer
 });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -22,6 +25,9 @@ const AppNavigator = createStackNavigator({
   },
   Main: {
     screen: MainScreen
+  },
+  Detail: {
+    screen: DetailScreen
   }
 });
 

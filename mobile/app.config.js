@@ -4,6 +4,7 @@
 const config = {
   env: 'dev',
   apiUrl: 'http://stackassignment-backend.farandal.com',
+  //apiUrl: 'https://jolly-otter-10.localtunnel.me',
   google: {
     clientID:
       '341947537567-s92njnjoagh7r6aelfnmchf99vqoghbv.apps.googleusercontent.com',

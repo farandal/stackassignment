@@ -61,6 +61,7 @@ class Home extends Component<Props> {
   googleOauth = async e => {
     const { login } = this.props;
     if (config.env === 'dev') {
+      console.log('login', oauth);
       login(oauth);
       return;
     }

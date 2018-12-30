@@ -125,16 +125,16 @@ function getItems() {
 
 function getItem(id) {
   return dispatch => {
-    dispatch(request({ method: GET_ITEM }));
+    dispatch(clearItem());
+    dispatch(getItemRequest());
     itemsService.getItem(id).then(
       item => {
-        dispatch(success({ method: GET_ITEM, data: item }));
+        dispatch(getItemSuccess({ data: item }));
       },
 
       error => {
         dispatch(
-          failure({
-            method: GET_ITEM,
+          getItemFailure({
             error: error && error.message ? error.message.toString() : 'error'
           })
         );
@@ -168,6 +168,23 @@ function request(data) {
 function success(data) {
   return { type: itemsConstants.ITEM_REQUEST_SUCCESS, data };
 }
+
+function getItemSuccess(data) {
+  return { type: itemsConstants.GET_ITEM_SUCCESS, data };
+}
+
+function clearItem() {
+  return { type: itemsConstants.CLEAR_ITEM };
+}
+
+function getItemFailure(error) {
+  return { type: itemsConstants.GET_ITEM_FAILURE, error };
+}
+
+function getItemRequest(id) {
+  return { type: itemsConstants.GET_ITEM_REQUEST, id };
+}
+
 function append(item) {
   return { type: itemsConstants.APPEND_ITEM, item: item };
 }

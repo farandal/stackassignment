@@ -14,7 +14,8 @@ import {
   UIManager,
   LayoutAnimation,
   TextInput,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 
 import { Page, Button, ButtonContainer, Heading } from '../../components';
@@ -24,6 +25,7 @@ import { itemsActions } from '../../actions';
 
 import moment from 'moment';
 import timezone from 'moment-timezone';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import {
   handleTextInput,
@@ -104,14 +106,14 @@ class ItemForm extends Component {
       this.setState({ isLoading: true, item: values });
       this.props.createItem(this.state.item);
     }
-    console.log('reseting form');
-    actions.resetForm();
+    //console.log('reseting form');
+    //actions.resetForm();
     return;
   };
 
   componentDidUpdate(props, state) {
-    console.log('Component did update from:', state);
-    console.log('to:', this.state);
+    //console.log('Component did update from:', state);
+    //console.log('to:', this.state);
   }
 
   componentDidMount() {
@@ -197,7 +199,14 @@ class ItemForm extends Component {
     return (
       <Page>
         {isLoading ? (
-          <Text>... loading </Text>
+          <Spinner
+            visible={isLoading}
+            textContent={''}
+            customIndicator={
+              <ActivityIndicator size={150} color={config.colors.primary} />
+            }
+            textStyle={styles.spinnerTextStyle}
+          />
         ) : (
           <Formik
             validationSchema={validationSchema}
@@ -253,6 +262,9 @@ class ItemForm extends Component {
   };
 }
 
+const styles = StyleSheet.create({
+  spinnerTextStyle: {}
+});
 /*
 Resources:
 -https://stackoverflow.com/questions/35300419/redux-do-i-have-to-import-store-in-all-my-containers-if-i-want-to-have-access-t

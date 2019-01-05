@@ -20,6 +20,7 @@ function getCalendar(id) {
         dispatch(success({ method: GET_CALENDAR, data: response.id }));
       },
       error => {
+        dispatch(logActions.error({ method: GET_CALENDAR, data: error }));
         dispatch(
           failure({
             method: GET_CALENDAR,
@@ -42,9 +43,10 @@ function createItem(item) {
         );
       },
       error => {
+        dispatch(logActions.error({ method: CREATE_ITEM, data: error }));
         dispatch(
           failure({
-            method: DELETE_ITEM,
+            method: CREATE_ITEM,
             error: error && error.message ? error.message.toString() : 'error'
           })
         );
@@ -63,6 +65,7 @@ function deleteItem(id) {
         dispatch(getItems());
       },
       error => {
+        dispatch(logActions.error({ method: DELETE_ITEM, data: error }));
         dispatch(
           failure({
             method: DELETE_ITEM,
@@ -96,6 +99,7 @@ function getItemsOneByOne() {
         });
       },
       error => {
+        dispatch(logActions.error({ method: GET_ITEMS, data: error }));
         dispatch(
           failure({
             method: GET_ITEMS,
@@ -118,6 +122,7 @@ function getItems() {
       },
 
       error => {
+        dispatch(logActions.error({ method: GET_ITEMS, data: error }));
         dispatch(
           failure({
             method: GET_ITEMS,
@@ -132,7 +137,7 @@ function getItems() {
 function getItem(id) {
   return dispatch => {
     dispatch(clearItem());
-    dispatch(getItemRequest());
+    dispatch(getItemRequest(id));
     itemsService.getItem(id).then(
       item => {
         dispatch(getItemSuccess({ data: item }));
@@ -140,6 +145,7 @@ function getItem(id) {
       },
 
       error => {
+        dispatch(logActions.error({ method: GET_ITEM, data: error }));
         dispatch(
           getItemFailure({
             error: error && error.message ? error.message.toString() : 'error'
@@ -159,6 +165,7 @@ function updateItem(item) {
         dispatch(logActions.success({ method: UPDATE_ITEM, data: response }));
       },
       error => {
+        dispatch(logActions.error({ method: UPDATE_ITEM, data: error }));
         dispatch(
           failure({
             method: UPDATE_ITEM,

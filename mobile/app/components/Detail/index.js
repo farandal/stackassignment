@@ -8,8 +8,10 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
 import { Card, Button as ElementsButton } from 'react-native-elements';
@@ -23,12 +25,10 @@ import config from '../../../app.config.js';
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-type Props = {};
-
-class Detail extends Component<Props> {
+class Detail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isLoading: false };
   }
 
   static navigationOptions = {
@@ -43,33 +43,70 @@ class Detail extends Component<Props> {
   };
 
   componentDidMount() {
-    console.log('GET ITEM', this.props.navigation.getParam('itemId'));
-    this.props.getItem(this.props.navigation.getParam('itemId'));
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => {
+        console.log('GET ITEM', this.props.navigation.getParam('itemId'));
+        let itemId = this.props.navigation.getParam('itemId');
+        this.props.getItem(itemId);
+        this.setState({ isLoading: true, isFocused: true });
+      }),
+      this.props.navigation.addListener('willBlur', () => {
+        this.setState({ isFocused: false, isLoading: false });
+      })
+    ];
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove());
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(props);
-    return state;
+    if (props.logs.type === 'LOG_ERROR' && props.logs.method === 'GET_ITEM') {
+      alert(props.logs.data);
+      return {
+        isLoading: false
+      };
+    }
+
+    if (
+      state.isFocused &&
+      (props.logs.type === 'LOG_SUCCESS' && props.logs.method === 'GET_ITEM')
+    ) {
+      return {
+        isLoading: false
+      };
+    }
+
+    return null;
   }
 
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
     const item = this.props.itemStore.data;
+    const { isLoading } = this.state;
     return (
       <Page>
-        <Card style={styles.card}>
-          {!!item && item.summary ? (
-            <View style={styles.contentView}>
-              <Text style={styles.titleText}>{item.summary}</Text>
-              <Text style={styles.bodyText}>{item.description}</Text>
-              <Text style={styles.bodyText}>
-                {moment(`${item.start.dateTime}`).calendar()}
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.titleText}>loading</Text>
-          )}
-        </Card>
+        <Spinner
+          visible={isLoading}
+          customIndicator={
+            <ActivityIndicator size={150} color={config.colors.primary} />
+          }
+        />
+        {!isLoading && (
+          <Card style={styles.card}>
+            {!!item && item.summary ? (
+              <View style={styles.contentView}>
+                <Text style={styles.titleText}>{item.summary}</Text>
+                <Text style={styles.bodyText}>{item.description}</Text>
+                <Text style={styles.bodyText}>
+                  {moment(`${item.start.dateTime}`).calendar()}
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.titleText}>loading</Text>
+            )}
+          </Card>
+        )}
 
         <ButtonContainer>
           <Button
@@ -112,7 +149,8 @@ const mapDispatchToProps = dispatch =>
 const mapStateToProps = state => {
   return {
     userStore: state.userReducer,
-    itemStore: state.itemReducer
+    itemStore: state.itemReducer,
+    logs: state.logReducer
   };
 };
 

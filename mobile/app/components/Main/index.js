@@ -11,17 +11,19 @@ import {
   TouchableOpacity,
   UIManager,
   LayoutAnimation,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
 import { Card, Button as ElementsButton } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { userActions, itemsActions } from '../../actions';
 import { userService, itemsService } from '../../services';
 import moment from 'moment';
 import timezone from 'moment-timezone';
 import { AsyncStorage } from 'react-native';
 import config from '../../../app.config.js';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -29,7 +31,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { isFocused: false };
+    this.state = { isFocused: false, isLoading: false };
   }
 
   static navigationOptions = {
@@ -43,29 +45,27 @@ class Main extends Component {
     }
   };
 
-  componentDidUpdate(props, state) {
-    console.log('Component did update from:', state);
-    console.log('to:', this.state);
-  }
-
   componentDidMount() {
     this.subs = [
       this.props.navigation.addListener('didFocus', () => {
         this.setState({ isFocused: true });
         if (this.props.navigation.getParam('update') === true) {
           console.log('GETTING THE LIST BECAUSE NEEDS UPDATE');
+          this.setState({ isLoading: true });
           this.props.getItems();
         } else if (!this.props.itemsStore.length) {
+          this.setState({ isLoading: true });
           console.log('GETTING THE LIST BECAUSE ITS EMPTY');
           this.props.getItems();
         }
       }),
-      this.props.navigation.addListener('willBlur', () =>
-        this.setState({ isFocused: false })
-      )
+      this.props.navigation.addListener('willBlur', () => {
+        this.setState({ isFocused: false, isLoading: false });
+      })
     ];
     console.log('UPDATING THE LIST FIRST TIME');
     this.props.getItems();
+    this.setState({ isLoading: true });
   }
 
   componentWillUnmount() {
@@ -73,74 +73,109 @@ class Main extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(props);
-    return state;
+    if (
+      state.isFocused &&
+      ((props.logs.type === 'LOG_SUCCESS' &&
+        props.logs.method === 'GET_ITEMS') ||
+        (props.logs.type === 'LOG_ERROR' && props.logs.method === 'GET_ITEMS'))
+    ) {
+      return {
+        isLoading: false
+      };
+    }
+
+    if (
+      state.isFocused &&
+      (props.logs.type === 'LOG_ERROR' && props.logs.method === 'GET_ITEMS')
+    ) {
+      Alert('Error retrieving list');
+    }
+
+    return null;
   }
 
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
     const { itemsStore } = this.props;
+    const { isLoading } = this.state;
     return (
       <Page>
-        <ScrollView>
-          {itemsStore &&
-            itemsStore.map((item, i) => (
-              <Card key={i}>
-                <View style={styles.card}>
-                  <View style={styles.cardContent}>
-                    <View style={styles.iconView}>
-                      <Icon
-                        name='calendar'
-                        size={30}
-                        color={config.colors.primary}
-                      />
-                    </View>
+        {isLoading ? (
+          <Spinner
+            visible={isLoading}
+            customIndicator={
+              <ActivityIndicator size={150} color={config.colors.primary} />
+            }
+          />
+        ) : (
+          <ScrollView>
+            {itemsStore &&
+              itemsStore.map((item, i) => (
+                <Card key={i}>
+                  <View style={styles.card}>
                     <View style={styles.cardContent}>
-                      <Text style={styles.titleText}>{item.summary}</Text>
-                      <Text style={styles.bodyText}>{item.description}</Text>
-                      <Text style={styles.bodyText}>
-                        {moment(`${item.start.dateTime}`).calendar()}
-                      </Text>
+                      <View style={styles.iconView}>
+                        <Icon
+                          name='calendar'
+                          size={30}
+                          color={config.colors.primary}
+                        />
+                      </View>
+                      <View style={styles.cardContent}>
+                        <Text style={styles.titleText}>{item.summary}</Text>
+                        <Text style={styles.bodyText}>{item.description}</Text>
+                        <Text style={styles.bodyText}>
+                          {moment(`${item.start.dateTime}`).calendar()}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.cardActions}>
+                      <View style={styles.buttonsView}>
+                        <TouchableOpacity
+                          style={styles.button}
+                          onPress={() => {
+                            this.props.navigation.navigate('Edit', {
+                              itemId: item.id
+                            });
+                          }}
+                        >
+                          <Icon name={'edit'} size={25} color='#ffffff' />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={styles.button}
+                          onPress={() => {
+                            this.props.navigation.navigate('Detail', {
+                              itemId: item.id
+                            });
+                          }}
+                        >
+                          <Icon
+                            name={'info-circle'}
+                            size={25}
+                            color='#ffffff'
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={[styles.button, styles.buttonRed]}
+                          onPress={() => {
+                            this.props.deleteItem(item.id);
+                          }}
+                        >
+                          <Icon
+                            name={'times-circle'}
+                            size={25}
+                            color='#ffffff'
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                  <View style={styles.cardActions}>
-                    <View style={styles.buttonsView}>
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                          this.props.navigation.navigate('Edit', {
-                            itemId: item.id
-                          });
-                        }}
-                      >
-                        <Icon name={'edit'} size={20} color='#ffffff' />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                          this.props.navigation.navigate('Detail', {
-                            itemId: item.id
-                          });
-                        }}
-                      >
-                        <Icon name={'eye'} size={20} color='#ffffff' />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                          this.props.deleteItem(item.id);
-                        }}
-                      >
-                        <Icon name={'delete'} size={20} color='#f44242' />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Card>
-            ))}
-        </ScrollView>
+                </Card>
+              ))}
+          </ScrollView>
+        )}
 
         <ButtonContainer>
           <Button
@@ -166,7 +201,7 @@ class Main extends Component {
 const styles = StyleSheet.create({
   baseText: {},
   titleText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold'
   },
   card: {
@@ -203,6 +238,9 @@ const styles = StyleSheet.create({
     backgroundColor: config.colors.secondary,
     borderRadius: 40,
     margin: 5
+  },
+  buttonRed: {
+    backgroundColor: '#f44242'
   }
 });
 
@@ -221,7 +259,8 @@ const mapDispatchToProps = dispatch =>
 const mapStateToProps = state => {
   return {
     userStore: state.userReducer,
-    itemsStore: state.itemsReducer
+    itemsStore: state.itemsReducer,
+    logs: state.logReducer
   };
 };
 

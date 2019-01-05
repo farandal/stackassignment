@@ -73,8 +73,8 @@ class Detail extends Component<Props> {
 
         <ButtonContainer>
           <Button
-            onPress={() => this.props.navigation.navigate('Main')}
-            text='Calendar'
+            onPress={() => this.props.navigation.navigate('Create')}
+            text='Create'
             color={config.colors.secondaryDark}
           />
         </ButtonContainer>

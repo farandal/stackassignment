@@ -45,6 +45,7 @@ class Home extends Component<Props> {
           console.log('Token', token);
           if (props.navigation.getParam('redirect', true)) {
             props.navigation.navigate('Main');
+            //props.navigation.navigate('Create');
           }
         }
       })

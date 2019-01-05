@@ -1,6 +1,7 @@
 import { itemsConstants } from '../constants';
 import { itemsService } from '../services';
 import { removeItemValue, setItemValue, getItemValue } from '../helpers';
+import { logActions } from './';
 
 const GET_ITEMS = 'GET_ITEMS';
 const DELETE_ITEM = 'DELETE_ITEM';
@@ -36,6 +37,9 @@ function createItem(item) {
     itemsService.createItem(item).then(
       response => {
         dispatch(success({ method: CREATE_ITEM, data: response }));
+        dispatch(
+          logActions.success({ method: CREATE_ITEM, data: response.id })
+        );
       },
       error => {
         dispatch(

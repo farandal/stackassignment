@@ -8,9 +8,11 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  UIManager,
+  LayoutAnimation,
+  Alert
 } from 'react-native';
-import { UIManager, LayoutAnimation, Alert } from 'react-native';
 import { Page, Button, ButtonContainer, Form, Heading } from '../../components';
 import { Card, Button as ElementsButton } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
@@ -24,12 +26,10 @@ import config from '../../../app.config.js';
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-type Props = {};
-
-class Main extends Component<Props> {
+class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isFocused: false };
   }
 
   static navigationOptions = {
@@ -43,9 +43,30 @@ class Main extends Component<Props> {
     }
   };
 
+  componentDidUpdate(props, state) {
+    console.log('Component did update from:', state);
+    console.log('to:', this.state);
+  }
+
   componentDidMount() {
-    console.log('GET ITEMS');
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => {
+        this.setState({ isFocused: true });
+        if (this.props.navigation.getParam('update') === true) {
+          console.log('NEED TO UPDATE THE LIST');
+          this.props.getItems();
+        }
+      }),
+      this.props.navigation.addListener('willBlur', () =>
+        this.setState({ isFocused: false })
+      )
+    ];
+
     this.props.getItems();
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove());
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -81,12 +102,22 @@ class Main extends Component<Props> {
                     <TouchableOpacity style={styles.button}>
                       <Icon name={'edit'} size={20} color='#ffffff' />
                     </TouchableOpacity>
+
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => {
                         this.props.navigation.navigate('Detail', {
                           itemId: item.id
                         });
+                      }}
+                    >
+                      <Icon name={'eye'} size={20} color='#ffffff' />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        this.props.deleteItem(item.id);
                       }}
                     >
                       <Icon name={'eye'} size={20} color='#ffffff' />
@@ -105,6 +136,11 @@ class Main extends Component<Props> {
               })
             }
             text='Home'
+            color={config.colors.secondaryDark}
+          />
+          <Button
+            onPress={() => this.props.navigation.push('Create')}
+            text='Create Meeting'
             color={config.colors.secondaryDark}
           />
         </ButtonContainer>
@@ -148,11 +184,13 @@ const styles = StyleSheet.create({
 });
 
 const getItems = itemsActions.getItems;
+const deleteItem = itemsActions.deleteItem;
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      getItems
+      getItems,
+      deleteItem
     },
     dispatch
   );

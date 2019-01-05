@@ -59,6 +59,7 @@ function deleteItem(id) {
     itemsService.deleteItem(id).then(
       response => {
         dispatch(success({ method: DELETE_ITEM, data: id }));
+        dispatch(logActions.success({ method: DELETE_ITEM, data: id }));
         dispatch(getItems());
       },
       error => {
@@ -112,6 +113,7 @@ function getItems() {
     itemsService.getItems().then(
       items => {
         dispatch(success({ method: GET_ITEMS, data: items }));
+        dispatch(logActions.success({ method: GET_ITEMS, data: items }));
         dispatch(appendItems(items));
       },
 
@@ -134,6 +136,7 @@ function getItem(id) {
     itemsService.getItem(id).then(
       item => {
         dispatch(getItemSuccess({ data: item }));
+        dispatch(logActions.success({ method: GET_ITEM, data: item }));
       },
 
       error => {
@@ -153,6 +156,7 @@ function updateItem(item) {
     itemsService.updateItem(item).then(
       response => {
         dispatch(success({ method: UPDATE_ITEM, data: response }));
+        dispatch(logActions.success({ method: UPDATE_ITEM, data: response }));
       },
       error => {
         dispatch(

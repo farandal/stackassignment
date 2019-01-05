@@ -43,7 +43,10 @@ class DatePicker extends React.PureComponent {
     return (
       <React.Fragment>
         <DisableKeyboard onPress={this.openPicker}>
-          <MaterialTextInput {...this.props} value={this.state.value} />
+          <MaterialTextInput
+            {...this.props}
+            value={this.state.value || undefined}
+          />
         </DisableKeyboard>
         <DateTimePicker
           mode='datetime'

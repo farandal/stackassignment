@@ -58,28 +58,31 @@ const validationSchema = Yup.object().shape({
     .min(3, 'input is too short!')
 });
 
+const InitialState = {
+  isFocused: false,
+  isLoading: true,
+  edit: false,
+  item: {
+    id: null,
+    summary: '',
+    location: '',
+    description: '',
+    start: null,
+    end: null
+  }
+};
+
 class ItemForm extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      summary: '',
-      location: '',
-      description: '',
-      start: null,
-      end: null
-    };
+    this.state = InitialState;
+  }
+  reset() {
+    this.setState(InitialState);
   }
 
-  submitForm = (values, actions) => {
-    let { dispatch } = this.props;
-    this.setState(values);
-    actions.setSubmitting(false);
-    this.props.createItem(this.state);
-    return;
-  };
-
   static navigationOptions = {
-    title: 'Add Meeting...',
+    title: '',
     headerStyle: {
       backgroundColor: config.colors.primary
     },
@@ -89,13 +92,99 @@ class ItemForm extends Component {
     }
   };
 
+  submitForm = (values, actions) => {
+    let { dispatch } = this.props;
+
+    actions.setSubmitting(false);
+    if (this.state.edit) {
+      this.setState({ isLoading: true, item: values });
+      console.log('POST EDIT', this.state);
+      this.props.updateItem(values);
+    } else {
+      this.setState({ isLoading: true, item: values });
+      this.props.createItem(this.state.item);
+    }
+    console.log('reseting form');
+    actions.resetForm();
+    return;
+  };
+
+  componentDidUpdate(props, state) {
+    console.log('Component did update from:', state);
+    console.log('to:', this.state);
+  }
+
+  componentDidMount() {
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => {
+        if (this.props.navigation.getParam('itemId')) {
+          this.setState({
+            isFocused: true,
+            isLoading: true,
+            title: 'Edit Item',
+            edit: true,
+            item: InitialState.item //resets the item
+          });
+          this.props.getItem(this.props.navigation.getParam('itemId'));
+          return;
+        }
+        this.setState({
+          isFocused: true,
+          isLoading: false,
+          edit: false,
+          title: 'Create Item',
+          item: InitialState.item //resets the item
+        });
+      }),
+      this.props.navigation.addListener('willBlur', () => {
+        this.setState({ isFocused: false });
+      })
+    ];
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove());
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (
+      state.isFocused &&
       props.logs.type === 'LOG_SUCCESS' &&
       props.logs.method === 'CREATE_ITEM'
     ) {
-      alert('Item was created');
       props.navigation.navigate('Main', { update: true });
+      return { isLoading: false };
+    }
+
+    if (
+      state.isFocused &&
+      props.logs.type === 'LOG_SUCCESS' &&
+      props.logs.method === 'UPDATE_ITEM'
+    ) {
+      props.navigation.navigate('Detail', { itemId: state.item.id });
+      return { isLoading: false };
+    }
+
+    if (
+      state.isFocused &&
+      props.logs.type === 'LOG_SUCCESS' &&
+      props.logs.method === 'GET_ITEM'
+    ) {
+      return {
+        item: {
+          id: props.logs.data.id,
+          summary: props.logs.data.summary,
+          location: props.logs.data.location,
+          description: props.logs.data.description,
+          start: moment(props.logs.data.start.dateTime).format(
+            'YYYY-MM-DDTHH:mm:00'
+          ),
+          end: moment(props.logs.data.end.dateTime).format(
+            'YYYY-MM-DDTHH:mm:00'
+          )
+        },
+        isLoading: false
+      };
     }
     return null;
   }
@@ -103,61 +192,62 @@ class ItemForm extends Component {
   render = () => {
     const { loggedIn, user, token } = this.props.userStore;
     const { itemsStore } = this.props;
-    const { store } = this.context;
+    const { isLoading, item, edit } = this.state;
+
     return (
       <Page>
-        <Formik
-          validationSchema={validationSchema}
-          initialValues={{
-            start: moment().format(DEFAULT_DATE_FORMAT),
-            end: moment()
-              .add(1, 'hour')
-              .format(DEFAULT_DATE_FORMAT)
-          }}
-          onSubmit={this.submitForm}
-        >
-          {props => {
-            return (
-              <Form>
-                <MyInput label='Summary' name='summary' type='name' />
+        {isLoading ? (
+          <Text>... loading </Text>
+        ) : (
+          <Formik
+            validationSchema={validationSchema}
+            initialValues={edit ? item : {}}
+            onSubmit={this.submitForm}
+            enableReinitialize
+          >
+            {props => {
+              return (
+                <Form>
+                  <MyInput label='Summary' name='summary' type='name' />
 
-                <MyInput label='Description' name='description' type='name' />
+                  <MyInput label='Description' name='description' type='name' />
 
-                <MyInput label='Location' name='location' type='name' />
+                  <MyInput label='Location' name='location' type='name' />
 
-                <DatePicker
-                  setFieldTouched={() => {}}
-                  setFieldValue={value => {
-                    props.values.start = moment(value).format(
-                      DEFAULT_DATE_FORMAT
-                    );
-                  }}
-                  value={props.values.start}
-                  label='Start'
-                  name='start'
-                />
+                  <DatePicker
+                    setFieldTouched={() => {}}
+                    setFieldValue={value => {
+                      props.values.start = moment(value).format(
+                        DEFAULT_DATE_FORMAT
+                      );
+                    }}
+                    value={props.values.start}
+                    label='Start'
+                    name='start'
+                  />
 
-                <DatePicker
-                  setFieldTouched={() => {}}
-                  setFieldValue={value => {
-                    props.values.end = moment(value).format(
-                      DEFAULT_DATE_FORMAT
-                    );
-                  }}
-                  value={props.values.end}
-                  label='End'
-                  name='end'
-                />
+                  <DatePicker
+                    setFieldTouched={() => {}}
+                    setFieldValue={value => {
+                      props.values.end = moment(value).format(
+                        DEFAULT_DATE_FORMAT
+                      );
+                    }}
+                    value={props.values.end}
+                    label='End'
+                    name='end'
+                  />
 
-                <Button
-                  color={config.colors.secondary}
-                  onPress={props.handleSubmit}
-                  text='Submit'
-                />
-              </Form>
-            );
-          }}
-        </Formik>
+                  <Button
+                    color={config.colors.secondary}
+                    onPress={props.handleSubmit}
+                    text='Submit'
+                  />
+                </Form>
+              );
+            }}
+          </Formik>
+        )}
       </Page>
     );
   };
@@ -170,10 +260,14 @@ Resources:
 */
 
 const createItem = itemsActions.createItem;
+const updateItem = itemsActions.updateItem;
+const getItem = itemsActions.getItem;
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      createItem
+      createItem,
+      getItem,
+      updateItem
     },
     dispatch
   );

@@ -5,7 +5,7 @@ const config = {
   env: 'dev',
   //apiUrl: 'http://stackassignment-backend-local.farandal.com:8888',
   //apiUrl: 'http://stackassignment-backend.farandal.com',
-  apiUrl: 'https://tame-chipmunk-80.localtunnel.me',
+  apiUrl: 'https://young-kangaroo-33.localtunnel.me',
   google: {
     clientID:
       '341947537567-s92njnjoagh7r6aelfnmchf99vqoghbv.apps.googleusercontent.com',

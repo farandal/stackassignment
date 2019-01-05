@@ -53,7 +53,10 @@ class Main extends Component {
       this.props.navigation.addListener('didFocus', () => {
         this.setState({ isFocused: true });
         if (this.props.navigation.getParam('update') === true) {
-          console.log('NEED TO UPDATE THE LIST');
+          console.log('GETTING THE LIST BECAUSE NEEDS UPDATE');
+          this.props.getItems();
+        } else if (!this.props.itemsStore.length) {
+          console.log('GETTING THE LIST BECAUSE ITS EMPTY');
           this.props.getItems();
         }
       }),
@@ -61,7 +64,7 @@ class Main extends Component {
         this.setState({ isFocused: false })
       )
     ];
-
+    console.log('UPDATING THE LIST FIRST TIME');
     this.props.getItems();
   }
 
@@ -84,44 +87,55 @@ class Main extends Component {
             itemsStore.map((item, i) => (
               <Card key={i}>
                 <View style={styles.card}>
-                  <View style={styles.iconView}>
-                    <Icon
-                      name='calendar'
-                      size={30}
-                      color={config.colors.primary}
-                    />
+                  <View style={styles.cardContent}>
+                    <View style={styles.iconView}>
+                      <Icon
+                        name='calendar'
+                        size={30}
+                        color={config.colors.primary}
+                      />
+                    </View>
+                    <View style={styles.cardContent}>
+                      <Text style={styles.titleText}>{item.summary}</Text>
+                      <Text style={styles.bodyText}>{item.description}</Text>
+                      <Text style={styles.bodyText}>
+                        {moment(`${item.start.dateTime}`).calendar()}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.contentView}>
-                    <Text style={styles.titleText}>{item.summary}</Text>
-                    <Text style={styles.bodyText}>{item.description}</Text>
-                    <Text style={styles.bodyText}>
-                      {moment(`${item.start.dateTime}`).calendar()}
-                    </Text>
-                  </View>
-                  <View style={styles.buttonsView}>
-                    <TouchableOpacity style={styles.button}>
-                      <Icon name={'edit'} size={20} color='#ffffff' />
-                    </TouchableOpacity>
+                  <View style={styles.cardActions}>
+                    <View style={styles.buttonsView}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                          this.props.navigation.navigate('Edit', {
+                            itemId: item.id
+                          });
+                        }}
+                      >
+                        <Icon name={'edit'} size={20} color='#ffffff' />
+                      </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        this.props.navigation.navigate('Detail', {
-                          itemId: item.id
-                        });
-                      }}
-                    >
-                      <Icon name={'eye'} size={20} color='#ffffff' />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                          this.props.navigation.navigate('Detail', {
+                            itemId: item.id
+                          });
+                        }}
+                      >
+                        <Icon name={'eye'} size={20} color='#ffffff' />
+                      </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        this.props.deleteItem(item.id);
-                      }}
-                    >
-                      <Icon name={'eye'} size={20} color='#ffffff' />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                          this.props.deleteItem(item.id);
+                        }}
+                      >
+                        <Icon name={'delete'} size={20} color='#f44242' />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </Card>
@@ -156,6 +170,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   card: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  cardContent: {
+    flex: 1,
+    flexDirection: 'column',
+    height: 100
+  },
+  cardActions: {
     flex: 1,
     flexDirection: 'row'
   },

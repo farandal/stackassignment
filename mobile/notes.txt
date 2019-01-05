@@ -52,3 +52,8 @@ https://alligator.io/react/react-native-redux/
 https://blog.benestudio.co/5-ways-to-connect-redux-actions-3f56af4009c8
 https://localtunnel.github.io/www/
 https://github.com/wkh237/react-native-fetch-blob#multipartform-data-example-post-form-data-with-file-and-data
+https://www.sohamkamani.com/blog/2017/03/31/react-redux-connect-explained/
+https://medium.com/@stowball/a-dummys-guide-to-redux-and-thunk-in-react-d8904a7005d3
+https://alligator.io/redux/redux-thunk/
+http://thecodebarbarian.com/async-await-with-react-and-redux-thunk
+https://itnext.io/simple-react-form-validation-with-formik-yup-and-or-spected-206ebe9e7dcc

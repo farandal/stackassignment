@@ -6,6 +6,7 @@
 
 import { sign, verifyToken } from '../../services/jwt';
 import { success } from '../../services/response/';
+import { findOrCreate } from '../../services/user';
 import passport from 'passport';
 import { webapp, google as gconfig } from '../../config';
 import { google } from 'googleapis';
@@ -46,6 +47,31 @@ export const googleCallback = (req, res, next) => {
   sign(user.googleId)
     .then(token => {
       redirect(res, `${webapp}?token=${token}`);
+    })
+    .catch(next);
+};
+
+export const mobileCallback = ({ body }, res, next) => {
+  const {
+    userID,
+    email,
+    name,
+    givenName,
+    familyName,
+    photoUrlTiny,
+    accessToken,
+    refreshToken,
+    serverAuthCode
+  } = body;
+  //console.log('BODY');
+  //console.log(JSON.stringify(body));
+  findOrCreate(userID, email, accessToken, refreshToken)
+    .then(user => {
+      sign(user.googleId)
+        .then(token => {
+          res.status(201).json({ token: token, user: user.view() });
+        })
+        .catch(next);
     })
     .catch(next);
 };

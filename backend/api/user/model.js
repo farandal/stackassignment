@@ -36,7 +36,7 @@ userSchema.methods = {
     let fields = ['id', 'email', 'googleId', 'calendarId'];
 
     if (full) {
-      fields = [...fields, 'accessToken', 'createdAt'];
+      fields = [...fields, 'accessToken'];
     }
 
     fields.forEach(field => {

@@ -17,9 +17,8 @@ import { middleware as query } from 'querymen';
 import { middleware as body } from 'bodymen';
 import { master, token, googleauth } from '../../services/passport';
 import bodyParser from 'body-parser';
-
-const router = new Router();
 const jsonParser = bodyParser.json();
+const router = new Router();
 
 /**
  * @swagger

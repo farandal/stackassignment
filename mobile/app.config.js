@@ -1,11 +1,6 @@
-//uses a tunel, sudo npm install -g localtunnel,  lt --port 8888
-//apiUrl = 'https://sour-bobcat-55.localtunnel.me';
-//READ: https://stackoverflow.com/questions/30909492/mongoerror-topology-was-destroyed
 const config = {
-  env: 'dev',
-  //apiUrl: 'http://stackassignment-backend-local.farandal.com:8888',
-  //apiUrl: 'http://stackassignment-backend.farandal.com',
-  apiUrl: 'https://young-kangaroo-33.localtunnel.me',
+  env: 'prod',
+  apiUrl: 'http://stackassignment-backend.farandal.com',
   google: {
     clientID:
       '341947537567-s92njnjoagh7r6aelfnmchf99vqoghbv.apps.googleusercontent.com',

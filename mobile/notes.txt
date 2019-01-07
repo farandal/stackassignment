@@ -1,0 +1,59 @@
+---------------
+USEFUL COMMANDS
+---------------
+#List android emultator names
+emulator -list-avds
+react-native run-android
+adb uninstall com.farandal.stackassignment
+react-native run-android --variant=release
+adb shell input keyevent 82 #to open the dev menu (82 being the Menu key code).
+Enable remote JS debugger, and open the url:
+http://localhost:8081/debugger-ui/
+lt --port 8888
+
+-----
+SETUP
+-----
+#init an empty react-natve mobile
+react-native init mobile
+#signing the package
+cd android/app
+mkdir keystore
+keytool -genkey -v -keystore stackassignment-mobile-key.keystore -alias stackassignment -keyalg RSA -keysize 2048 -validity 10000
+#added config in android/gradle.properties
+MYAPP_RELEASE_STORE_FILE=keystore/stackassignment-mobile-key.keystore
+MYAPP_RELEASE_KEY_ALIAS=stackassignment
+MYAPP_RELEASE_STORE_PASSWORD=stackassignment
+MYAPP_RELEASE_KEY_PASSWORD=stackassignment
+#get the certificate signature
+cd android/app
+keytool -list -alias stackassignment -keystore ./keystores/stackassignment-mobile-key.keystore
+keytool -v -list -alias stackassignment -keystore ./keystores/stackassignment-mobile-key.keystore -storepass stackassignment -keypass stackassignment
+#signature
+50:D6:4C:39:74:E6:A8:74:ED:E9:F1:4F:4E:FE:BD:8B:91:9C:FF:F5
+-----------
+DEVELOPMENT
+-----------
+#added splash screen
+yarn add react-native-splash-screen
+react-native link react-native-splash-screen
+added image files, adn followed instructions at https://github.com/crazycodeboy/react-native-splash-screen
+yarn add styled-components
+------------
+DEPENDENCIES
+------------
+react-native-splash-screen
+styled-components
+------------------
+RESOURCEFUL LINLKS
+------------------
+https://medium.com/@filipvitas/setup-react-native-app-from-scratch-7f42cbeb4b01
+https://alligator.io/react/react-native-redux/
+https://blog.benestudio.co/5-ways-to-connect-redux-actions-3f56af4009c8
+https://localtunnel.github.io/www/
+https://github.com/wkh237/react-native-fetch-blob#multipartform-data-example-post-form-data-with-file-and-data
+https://www.sohamkamani.com/blog/2017/03/31/react-redux-connect-explained/
+https://medium.com/@stowball/a-dummys-guide-to-redux-and-thunk-in-react-d8904a7005d3
+https://alligator.io/redux/redux-thunk/
+http://thecodebarbarian.com/async-await-with-react-and-redux-thunk
+https://itnext.io/simple-react-form-validation-with-formik-yup-and-or-spected-206ebe9e7dcc

@@ -1,6 +1,8 @@
 # stackassignment
 Stack Assignment
 
+https://docs.google.com/document/d/13hpNePPTIr4QDye4UXM_0IPsAxTgqQzSYoO_e-fCPpU/edit
+
 ## Requirement
 
 “to do list” application
